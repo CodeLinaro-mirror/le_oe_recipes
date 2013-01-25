@@ -14,7 +14,7 @@
 #     * Neither the name of The Linux Foundation nor the names of its
 #       contributors may be used to endorse or promote products derived
 #       from this software without specific prior written permission.
-# 
+#
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR IMPLIED
 # WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT
@@ -35,11 +35,11 @@ shelloff="disable"
 
 if [ "$1" == "$shelloff" ];
 then
-	sed 's/^[^#]*:respawn:/#&/' $inittab > $temp_inittab
+	sed 's/^[^#]*:respawn:.*\(getty\|sulogin\)/#&/' $inittab > $temp_inittab
 	mv $temp_inittab $inittab
 elif [ "$1" == "$shellon" ];
 then
-	sed 's/^#\(.*:respawn:\)/\1/' $inittab > $temp_inittab
+	sed 's/^#\(.*:respawn:.*\(getty\|sulogin\)\)/\1/' $inittab > $temp_inittab
 	mv $temp_inittab $inittab
 else
 	echo "Invalid argument. Usage: $0 $shelloff | $shellon"
