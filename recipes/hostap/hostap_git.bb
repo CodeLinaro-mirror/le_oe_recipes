@@ -2,7 +2,8 @@ inherit autotools linux-kernel-base
 
 DESCRIPTION = "Hostap"
 LICENSE = "BSD"
-LIC_FILES_CHKSUM = "file://COPYING;md5=c54ce9345727175ff66d17b67ff51f58"
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/\
+${LICENSE};md5=3775480a712fc46a69647678acb234cb"
 
 FILES_${PN} += "\
         /usr/local/bin \
@@ -13,7 +14,7 @@ FILES_${PN}-dbg += "\
         /usr/local/sbin/.debug \
         "
 
-PR = "r1"
+PR = "r3"
 
 DEPENDS = "openssl qmi"
 
