@@ -12,12 +12,12 @@ PR = "r0"
 
 DEPENDS = "libnl pkgconfig"
 
-SRC_URI = "http://wireless.kernel.org/download/iw/${P}.tar.bz2 \
+SRC_URI = "http://kernel.org/pub/software/network/iw/${P}.tar.bz2 \
            file://0001-iw-version.sh-don-t-use-git-describe-for-versioning.patch "
 
-SRC_URI[md5sum] = "1c18bfbbc8773629e5e8ac733a39540c"
+SRC_URI[md5sum] = "618ad1106a196fb1c3d827de96da437c"
 
-SRC_URI[sha256sum] = "df11036ac11df31f44083da962a6e9c74bdea7c01c596c4b5840f948cdb6c857"
+SRC_URI[sha256sum] = "3dae92ca5989cbc21155941fa01907a5536da3c5f6898642440c61484fc7e0f9"
 
 do_install() {
     oe_runmake DESTDIR="${D}" install
