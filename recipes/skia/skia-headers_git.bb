@@ -1,8 +1,8 @@
 DESCRIPTION = "Installs external/skia's headers into staging directory"
-LICENSE = "QUALCOMM-Proprietary"
-LIC_FILES_CHKSUM = "file://${COREBASE}/meta-qcom/files/qcom-licenses/\
-QUALCOMM-Proprietary;md5=92b1d0ceea78229551577d4284669bb8"
-PR = "r0"
+LICENSE = "BSD"
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/\
+BSD;md5=3775480a712fc46a69647678acb234cb"
+PR = "r1"
 
 SRC_URI = "file://${WORKSPACE}/external/skia"
 
