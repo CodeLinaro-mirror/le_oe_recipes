@@ -2,8 +2,6 @@
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/sbin/lighttpd
-<<<<<<< HEAD
-=======
 WEBSERVER_FOLDER_PERM="chmod -R 770 /WEBSERVER"
 WEBSERVER_OWNER_PERM="chown -R www-data:www-data /WEBSERVER "
 WWW_FOLDER_PERM="chmod -R 770 /www "
@@ -16,7 +14,6 @@ SELF_SIGN_CA_PATH="/etc/mdm9625.com.crt"
 NO_PASWD_SELF_SIGN_CA_PATH="/etc/mdm9625.com.pem"
 CHNG_PERM_SELF_SIGN_CA_PATH="chmod 755 /etc/mdm9625.com.pem"
 OPEN_SSL_PATH="/etc/openssl.cnf"
->>>>>>> 6bc1349... Lighttpd: auto generation of certificates.
 NAME=lighttpd
 DESC="Lighttpd Web Server"
 OPTS="-f /etc/lighttpd.conf"
@@ -55,13 +52,12 @@ case "$1" in
 	;;
   stop)
 	echo -n "Stopping $DESC: "
+	$RM_RESOURCE_FILES
 	start-stop-daemon --stop -x "$DAEMON"
 	echo "$NAME."
 	;;
   restart|force-reload)
 	echo -n "Restarting $DESC: "
-<<<<<<< HEAD
-=======
 	$RM_RESOURCE_FILES
 	rm -rf $PRIVATE_KEY_PATH $NO_PSWD_PRIVATE_KEY_PATH 
 	echo -n "generating self-signing certificate for webserver: "
@@ -88,7 +84,6 @@ case "$1" in
 	echo -n "changing permissions for www: "
 	$WWW_FOLDER_PERM
 	$WWW_OWNER_PERM
->>>>>>> 6bc1349... Lighttpd: auto generation of certificates.
 	start-stop-daemon --stop -x "$DAEMON"
 	sleep 1
 	start-stop-daemon --start -x "$DAEMON" -- $OPTS

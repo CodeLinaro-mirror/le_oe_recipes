@@ -58,7 +58,7 @@ do_install_append() {
     install -m 0755 ${WORKDIR}/lighttpd ${D}${sysconfdir}/init.d
     install -m 0755 ${WORKDIR}/lighttpd.conf ${D}${sysconfdir}
     install -m 0755 ${WORKDIR}/openssl.cnf ${D}${sysconfdir}
-    install -m 0755 ${WORKDIR}/lighttpd.user ${D}${sysconfdir}
+    install -m 0770 ${WORKDIR}/lighttpd.user ${D}/www/lighttpd.user
     install -m 0644 ${WORKDIR}/index.html.lighttpd ${D}/www/pages/index.html
 }
 
