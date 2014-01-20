@@ -8,7 +8,7 @@ SRC_URI += "file://files/50-log.rules"
 
 DEPENDS = "zlib openssl glib-2.0 libcap"
 
-PR = "r12"
+PR = "r13"
 
 inherit autotools
 
@@ -19,11 +19,9 @@ INITSCRIPT_PARAMS = "start 38 S 2 3 4 5 S . stop 62 0 1 6 ."
 
 inherit update-rc.d
 
-EXTRA_OECONF_append_msm8960 = " --with-host-os=${HOST_OS}"
-EXTRA_OECONF_append_msm8974 = " --with-host-os=${HOST_OS}"
-EXTRA_OECONF_append_msm8610 = " --with-host-os=${HOST_OS}"
-EXTRA_OECONF_append_msm8226 = " --with-host-os=${HOST_OS}"
-EXTRA_OECONF_append += "--with-sanitized-headers=${STAGING_KERNEL_DIR}/usr/include"
+EXTRA_OECONF += "--with-sanitized-headers=${STAGING_KERNEL_DIR}/usr/include"
+EXTRA_OECONF_append_a-family = " --with-host-os=${HOST_OS}"
+EXTRA_OECONF_append_b-family = " --with-host-os=${HOST_OS}"
 
 do_install_append() {
    install -m 0755 -d ${D}${includedir}/cutils

@@ -9,7 +9,7 @@ SRC_URI = "file://${WORKSPACE}/qcom-opensource/kernel/kernel-tests"
 
 DEPENDS = "virtual/kernel"
 
-PR = "r2"
+PR = "r3"
 
 S = "${WORKDIR}/kernel-tests"
 CFLAGS_pn-${PN} = ""
@@ -21,14 +21,14 @@ KERNEL_VERSION = "${@get_kernelversion('${STAGING_KERNEL_DIR}')}"
 
 EXTRA_OEMAKE += "ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 
+#re-use non-perf settings
+BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
+
 EXTRA_OECONF = "--prefix=/usr/kernel-tests \
                 --with-kernel=${STAGING_KERNEL_DIR} \
                 --disable-sps \
+                --enable-target=${BASEMACHINE} \
                 --with-sanitized-headers=${STAGING_KERNEL_DIR}/usr/include"
-
-EXTRA_OECONF_append_msm7627a = " --disable-ion"
-EXTRA_OECONF_append_msm7627a = " --disable-ocmem"
-EXTRA_OECONF_append_msm7627a = " --enable-v4l2apps"
 
 FILES_${PN}-dbg = "${prefix}/kernel-tests/*/.debug/* ${prefix}/src/debug/*"
 FILES_${PN}-dbg += "${libdir}/*.so ${libdir}/.debug/*"

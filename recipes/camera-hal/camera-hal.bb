@@ -7,8 +7,7 @@ PR = "r8"
 
 SRC_URI = "file://${WORKSPACE}/camera-hal \
            file://camera_parameters_header_include_patch.txt \
-           file://dlog-replace-utils-patch.txt \
- "
+           file://dlog-replace-utils-patch.txt"
 
 S = "${WORKDIR}/camera-hal"
 
@@ -36,28 +35,20 @@ CFLAGS += "-I${STAGING_INCDIR}/cameracommon"
 CFLAGS += "-I${STAGING_KERNEL_DIR}/usr/include"
 CFLAGS += "-I${STAGING_KERNEL_DIR}/usr/include/media"
 
-EXTRA_OECONF_append = " --enable-debug=no --with-dlog"
+EXTRA_OECONF += " --enable-debug=no --with-dlog --enable-target=${BASEMACHINE} \
+                 --with-sanitized-headers=${STAGING_KERNEL_DIR}/usr/include"
 
-EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm7627a', ' --enable-target=msm7627a', '', d)}"
-EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8960', ' --enable-target=msm8960', '', d)}"
-EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8974', ' --enable-target=msm8974', '', d)}"
-EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8610', ' --enable-target=msm8610', '', d)}"
-EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8226', ' --enable-target=msm8226', '', d)}"
-EXTRA_OECONF_append = " --with-additional-include-directives="${WORKSPACE}/mm-video-oss/mm-core/inc/ -I${WORKSPACE}/hardware/libhardware/include -I${WORKSPACE}/base/include -I${WORKSPACE}/system/core/include -I${WORKSPACE}/mm-video-oss/libstagefrighthw""
+EXTRA_OECONF_append_a-family = " --with-additional-include-directives="-I${WORKSPACE}/mm-video-oss/mm-core/inc \
+                                 -I${WORKSPACE}/mm-still/omx/inc/""
+EXTRA_OECONF_append_b-family = " --with-additional-include-directives="${WORKSPACE}/mm-video-oss/mm-core/inc \
+                                 -I${WORKSPACE}/hardware/libhardware/include -I${WORKSPACE}/base/include \
+                                 -I${WORKSPACE}/system/core/include -I${WORKSPACE}/mm-video-oss/libstagefrighthw""
 
-EXTRA_OECONF_append = " --with-sanitized-headers=${STAGING_KERNEL_DIR}/usr/include"
-EXTRA_OECONF_append_msm8960 = " --with-additional-include-directives="-I${WORKSPACE}/mm-video-oss/mm-core/inc/ -I${WORKSPACE}/mm-still/omx/inc/""
-EXTRA_OECONF_append_msm8974 = " --with-additional-include-directives="${WORKSPACE}/mm-video-oss/mm-core/inc/ ""
-EXTRA_OECONF_append_msm8610 = " --with-additional-include-directives="${WORKSPACE}/mm-video-oss/mm-core/inc/ -I${WORKSPACE}/hardware/libhardware/include -I${WORKSPACE}/base/include -I${WORKSPACE}/system/core/include -I${WORKSPACE}/mm-video-oss/libstagefrighthw""
+CPPFLAGS += "-I${STAGING_INCDIR}/c++ \
+             -I${STAGING_INCDIR}/c++/${TARGET_SYS}"
 
-#TODO: append msm name.
-CPPFLAGS += "-I${STAGING_INCDIR}/c++"
-CPPFLAGS += "-I${STAGING_INCDIR}/c++/${TARGET_SYS}"
-
-FILES_${PN}_append_msm8960 += "/usr/lib/hw/*"
-FILES_${PN}_append_msm8974 += "/usr/lib/*"
-FILES_${PN}_append_msm8610 += "/usr/lib/*"
-FILES_${PN}_append_msm8226 += "/usr/lib/*"
+FILES_${PN}_append_a-family += "/usr/lib/hw/*"
+FILES_${PN}_append_b-famliy += "/usr/lib/*"
 
 # The camera-hal package contains symlinks that trip up insane
 INSANE_SKIP_${PN} = "dev-so"
