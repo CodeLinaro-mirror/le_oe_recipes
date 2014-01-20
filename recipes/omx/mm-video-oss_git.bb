@@ -4,7 +4,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/\
 ${LICENSE};md5=3775480a712fc46a69647678acb234cb"
 SRC_URI = "file://${WORKSPACE}/mm-video-oss"
 
-PR = "r17"
+PR = "r18"
 
 DEPENDS = "virtual/kernel"
 DEPENDS += "glib-2.0"
@@ -25,20 +25,15 @@ inherit autotools
 #re-use non-perf settings
 BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
 
-EXTRA_OECONF_append = "--with-libhardware-headers=${WORKSPACE}/hardware/libhardware "
-EXTRA_OECONF_append = "--with-sanitized-headers=${STAGING_KERNEL_DIR}/usr/include "
-EXTRA_OECONF_append = " --with-common-includes=${STAGING_INCDIR}"
-EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8655', ' --enable-target-msm7630=yes', '', d)}"
-EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8960', ' --enable-target-msm8960=yes', '', d)}"
-EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8974', ' --enable-target-msm8974=yes', '', d)}"
-EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8610', ' --enable-target-msm8610=yes', '', d)}"
-EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8226', ' --enable-target-msm8226=yes', '', d)}"
+EXTRA_OECONF += " --with-libhardware-headers=${WORKSPACE}/hardware/libhardware \
+                 --with-sanitized-headers=${STAGING_KERNEL_DIR}/usr/include \
+                 --with-common-includes=${STAGING_INCDIR} \
+                 --enable-target-${BASEMACHINE}=yes"
 
-CPPFLAGS += "-I${STAGING_INCDIR}/glib-2.0"
-CPPFLAGS += "-I${STAGING_LIBDIR}/glib-2.0/include"
-
-CPPFLAGS += "-I${STAGING_INCDIR}/c++"
-CPPFLAGS += "-I${STAGING_INCDIR}/c++/${TARGET_SYS}"
+CPPFLAGS += "-I${STAGING_INCDIR}/glib-2.0 \
+             -I${STAGING_LIBDIR}/glib-2.0/include \
+             -I${STAGING_INCDIR}/c++ \
+             -I${STAGING_INCDIR}/c++/${TARGET_SYS}"
 
 LDFLAGS += "-lglib-2.0"
 

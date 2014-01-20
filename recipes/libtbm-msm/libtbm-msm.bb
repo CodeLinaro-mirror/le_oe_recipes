@@ -16,8 +16,8 @@ DEPENDS = "libtbm"
 DEPENDS += "virtual/kernel"
 DEPENDS += "libgenlock"
 
-EXTRA_OECONF_append += " --with-kernel-headers=${STAGING_KERNEL_DIR}/usr"
-EXTRA_OECONF_append += " --with-genlock=${STAGING_DIR_TARGET}/usr"
+EXTRA_OECONF += " --with-kernel-headers=${STAGING_KERNEL_DIR}/usr \
+                 --with-genlock=${STAGING_DIR_TARGET}/usr"
 
 LEAD_SONAME="libtbm_msm.so"
 FILES_${PN} += "/usr/lib/bufmgr/libtbm_msm.so*"
