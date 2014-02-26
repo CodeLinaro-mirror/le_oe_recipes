@@ -20,10 +20,10 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 KDIR = "/kernel"
 SRC_DIR = "${WORKSPACE}/kernel"
 PV = "git-${GITSHA}"
-PR = "r5"
+PR = "r6"
 
 PROVIDES += "virtual/kernel"
-DEPENDS = "virtual/${TARGET_PREFIX}gcc"
+DEPENDS = "virtual/${TARGET_PREFIX}gcc dtbtool-native mkbootimg-native"
 
 INHIBIT_DEFAULT_DEPS = "1"
 # Until usr/src/linux/scripts can be correctly processed
@@ -113,8 +113,10 @@ __do_clean_make () {
 }
 
 KERNEL_VERSION = "${@get_kernelversion('${O}')}"
-do_install () {	
+do_install () {
+
 	# Files destined for the target
+
 	install -d ${D}/boot
 	for f in System.map Module.symvers vmlinux; do
 		install -m 0644 ${O}/${f} ${D}/boot/${f}-${KERNEL_VERSION}
@@ -132,4 +134,39 @@ do_install () {
     	cp -rf ${D}/* ${STAGING_DIR_TARGET}
 }
 
+do_deploy () {
 
+        # Make bootimage
+        ver=`sed -r 's/#define UTS_RELEASE "(.*)"/\1/' ${STAGING_KERNEL_DIR}/include/generated/utsrelease.h`
+
+        # Make Device tree blobs for various hardware configurations
+        dts_files=`find ${WORKSPACE}/kernel/arch/arm/boot/dts -iname *${MACHINE_DTS_NAME}*.dts | awk -F/ '{print $NF}' | awk -F[.][d] '{print $1}'`
+ 
+        for d in ${dts_files}; do
+            ${STAGING_KERNEL_DIR}/scripts/dtc/dtc -p 4096 -O dtb -o ${STAGING_DIR_TARGET}/boot/${d}.dtb ${WORKSPACE}/kernel/arch/arm/boot/dts/${d}.dts
+        done
+
+        dtb_files=`find ${STAGING_DIR_TARGET}/boot -iname *${MACHINE_DTS_NAME}*.dtb | awk -F/ '{print $NF}' | awk -F[.][d] '{print $1}'`
+
+        # Create separate images with dtb appended to zImage for all targets.
+        for d in ${dtb_files}; do
+            targets=`echo ${d#${MACHINE_DTS_NAME}-}`
+            cat ${STAGING_DIR_TARGET}/boot/zImage-${ver} ${STAGING_DIR_TARGET}/boot/${d}.dtb > ${STAGING_DIR_TARGET}/boot/dtb-zImage-${ver}-${targets}
+        done
+
+        ${STAGING_BINDIR_NATIVE}/dtbtool ${STAGING_DIR_TARGET}/boot/ -o ${STAGING_DIR_TARGET}/boot/masterDTB -p ${STAGING_KERNEL_DIR}/scripts/dtc/ -v
+
+        mkdir -p ${DEPLOY_DIR_IMAGE}
+
+        # Updated base address according to new memory map.
+        ${STAGING_BINDIR_NATIVE}/mkbootimg --kernel ${STAGING_DIR_TARGET}/boot/zImage-${ver} \
+            --dt ${STAGING_DIR_TARGET}/boot/masterDTB \
+            --ramdisk /dev/null \
+            --cmdline "noinitrd root=/dev/mtdblock17 rw rootfstype=yaffs2 console=ttyHSL0,115200,n8 androidboot.hardware=qcom ehci-hcd.park=3 g-android.rx_trigger_enabled=1" \
+            --base 0x00300000 \
+            --tags-addr 0x06800000 \
+            --ramdisk_offset 0x0 \
+            --output ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img
+}
+
+addtask deploy before do_build after do_install
