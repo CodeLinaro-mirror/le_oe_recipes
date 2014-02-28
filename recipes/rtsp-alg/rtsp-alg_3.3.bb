@@ -3,7 +3,7 @@ DESCRIPTION = "RSTP ALG"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://nf_nat_rtsp.c;md5=afa391a5db8f879772af6fead894dac1"
 
-PR = "r1"
+PR = "r2"
 
 KERNEL_VERSION = "${@get_kernelversion('${STAGING_KERNEL_DIR}')}"
 
@@ -16,13 +16,15 @@ FILES_${PN} += "\
     "
 
 SRC_URI = "http://github.com/maru-sama/rtsp-linux-v2.6/archive/${PV}.tar.gz \
-		file://Makefile.patch \
-"
-SRC_URI[md5sum]    = "e59284768c8dec69dbace22196e9dee8"
-SRC_URI[sha256sum] = "2f5e516790bc6e5f10b020643fff2746fdfec3c503a70b64b21e5acdc49ccd42"
+            file://Makefile.patch   \
+            "
+
+SRC_URI[md5sum]    = "dad6373e4f97a9a3833f6c6c5ab4953e"
+SRC_URI[sha256sum] = "b3233862364ef6b8430f1ac8edf77f44e1bc26d08869600dfc45777d4c6852f8"
 
 
-S = "${WORKDIR}/rtsp-linux-v2.6-${PV}"
+S = "${WORKDIR}/rtsp-linux-3.3"
+
 do_configure() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS CC LD CPP
 	oe_runmake 'MODPATH="${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net"' \
