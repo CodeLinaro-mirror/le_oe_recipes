@@ -7,8 +7,6 @@ require msm-x11-image.inc
 DEPENDS = 	" \
 		virtual/kernel \
 		virtual/bootloader \
-		pkgconfig-native \
-		gtk-doc-native \
 		gettext-native \
 		mkbootimg-native \
 		dtbtool-native \
@@ -45,11 +43,7 @@ IMAGE_INSTALL += "udev"
 IMAGE_INSTALL += "libstdc++"
 IMAGE_INSTALL += "mm-video-oss"
 IMAGE_INSTALL += "mm-core-oss"
-IMAGE_INSTALL += "camera-hal"
 IMAGE_INSTALL += "open-source-kernel-tests"
-IMAGE_INSTALL += "libtbm-msm"
-IMAGE_INSTALL += "libgenlock"
-IMAGE_INSTALL += "mm-image-codec"
 IMAGE_INSTALL += "init-audio"
 IMAGE_INSTALL += "wcnss"
 IMAGE_INSTALL += "wireless-tools"
