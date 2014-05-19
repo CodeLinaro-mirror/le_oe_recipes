@@ -29,13 +29,11 @@
 #
 # wcnss        init.d script to set wcnss
 
-set -e
-
 echo -n "Setting WNCSS platform : "
 
 serialno=
 
-wcnssnode=`ls /dev/wcnss*`
+wcnssnode=`ls /dev/wcnss_wlan`
     case "$wcnssnode" in
         *wcnss*)
             # Before triggering wcnss, let it know that
@@ -68,5 +66,25 @@ wcnssnode=`ls /dev/wcnss*`
         echo $serialno > /sys/devices/platform/wcnss_wlan.0/serial_number
     fi
 
+#Setting up connectivity variables
+fm_module=`ls /lib/modules/\`uname -r\`/kernel/drivers/media/radio/radio-iris-transport.ko`
+wlan_module=`ls /lib/modules/wlan/prima/wlan.ko`
+set_bt=`ls /sys/module/hci_smd/parameters/hcismd_set`
+
+# Once user space notfies to device node that is available,
+# inserting the modulue
+insmod $wlan_module
+
+# Inserting Radio FM module
+insmod $fm_module
+
+#Calibrating FM radio
+fm_qsoc_patches 197632 0 &
+
+#Bringing wlan up
+ifconfig wlan0 up
+
+#Starting BT
+echo 1 > $set_bt
 
 exit 0

@@ -28,7 +28,14 @@ do_install_append_msm8226() {
 }
 
 INITSCRIPT_NAME = "set_wcnss_mode"
-INITSCRIPT_PARAMS = "start 80 2 3 4 5 . stop 20 0 1 6 ."
+INITSCRIPT_PARAMS = "start 99 1 2 3 4 5 6 ."
+
+pkg_postinst () {
+	[ -n "$D" ] && OPT="-r $D" || OPT="-s"
+	# remove all rc.d-links potentially created from alternatives
+	update-rc.d $OPT -f ${INITSCRIPT_NAME} remove
+	update-rc.d $OPT ${INITSCRIPT_NAME} ${INITSCRIPT_PARAMS}
+}
 
 FILES_${PN} = "/lib/firmware/*"
 FILES_${PN} += "/etc/*"
