@@ -48,5 +48,6 @@ FindAndMount () {
 
 FindAndMount cache /cache yaffs2
 FindAndMount misc /misc mtd
+FindAndMount modem /firmware yaffs2
 
 exit
