@@ -20,7 +20,6 @@ DEPENDS += "mm-camera"
 DEPENDS += "mm-still"
 DEPENDS += "utils-lib"
 DEPENDS += "mm-image-codec"
-DEPENDS += "dlog"
 DEPENDS += "lua"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -36,7 +35,7 @@ CFLAGS += "-I${STAGING_INCDIR}/cameracommon"
 CFLAGS += "-I${STAGING_KERNEL_DIR}/usr/include"
 CFLAGS += "-I${STAGING_KERNEL_DIR}/usr/include/media"
 
-EXTRA_OECONF_append = " --enable-debug=no --with-dlog"
+EXTRA_OECONF_append = " --enable-debug=no"
 
 EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm7627a', ' --enable-target=msm7627a', '', d)}"
 EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8960', ' --enable-target=msm8960', '', d)}"
@@ -86,14 +85,6 @@ do_configure_prepend() {
     mkdir -p ${STAGING_INCDIR}/sync
     wget --no-check-certificate -O ${STAGING_INCDIR}/sync/sync.h https://www.codeaurora.org/cgit/external/gigabyte/platform/system/core/plain/include/sync/sync.h?h=caf/jb_3.2_rb5.39
 
-    # patch utils lib to replace log with dlog
-    cp ${S}/../dlog-replace-utils-patch.txt ${WORKSPACE}/base/
-    pushd ${WORKSPACE}/base
-
-    git reset --hard
-    git apply dlog-replace-utils-patch.txt
-
-    popd
 }
 
 do_clean_extra () {
