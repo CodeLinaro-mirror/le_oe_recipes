@@ -6,7 +6,7 @@ require msm-image.inc
 # our yaffs2 image...
 DEPENDS = 	" \
 		virtual/kernel \
-		virtual/bootloader \
+		virtual/armel-bootloader \
 		gettext-native \
 		mkbootimg-native \
 		dtbtool-native \
