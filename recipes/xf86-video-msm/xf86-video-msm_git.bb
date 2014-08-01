@@ -9,12 +9,11 @@ PR = "r8"
 SRC_URI = "file://${WORKSPACE}/xf86-video-msm"
 S = "${WORKDIR}/xf86-video-msm"
 
-EXTRA_OECONF_append += " --with-kernel-headers=${STAGING_KERNEL_DIR}/usr/include \
-                         --with-c2d=${STAGING_EXECPREFIXDIR} \
-                         --with-c2d-headers=${STAGING_INCDIR}/C2D \
-                         --with-c2d-libraries=${STAGING_LIBDIR}"
-
-EXTRA_OECONF_append += " --enable-target=${BASEMACHINE}"
+EXTRA_OECONF += " --with-kernel-headers=${STAGING_KERNEL_DIR}/usr/include \
+                 --with-c2d=${STAGING_EXECPREFIXDIR} \
+                 --with-c2d-headers=${STAGING_INCDIR}/C2D \
+                 --with-c2d-libraries=${STAGING_LIBDIR} \
+                 --enable-target=${BASEMACHINE}"
 
 RDEPENDS += "xserver-xorg"
 
