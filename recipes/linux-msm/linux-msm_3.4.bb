@@ -24,7 +24,7 @@ SRC_DIR = "${WORKSPACE}/kernel"
 PV = "git-${GITSHA}"
 PR = "r9"
 
-PROVIDES += "virtual/kernel"
+#PROVIDES += "virtual/kernel"
 DEPENDS = "virtual/${TARGET_PREFIX}gcc"
 
 INHIBIT_DEFAULT_DEPS = "1"

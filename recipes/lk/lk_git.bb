@@ -8,7 +8,7 @@ HOMEPAGE = "https://www.codeaurora.org/gitweb/quic/la?p=kernel/lk.git"
 PROVIDES = "virtual/bootloader"
 SRC_URI  = "file://${WORKSPACE}/bootable/bootloader/lk"
 S        = "${WORKDIR}/${PN}"
-PR       = "r13"
+PR       = "r14"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
@@ -33,7 +33,10 @@ EXTRA_OEMAKE   += "${@base_contains('DISTRO_FEATURES', 'signed-kernel', 'SIGNED_
 
 do_install() {
 	install	-d ${D}/boot
-	install build-${MY_TARGET}/${BOOTLOADER_NAME}.{mbn,raw} ${D}/boot
+	install build-${MY_TARGET}/${BOOTLOADER_NAME}.mbn ${D}/boot
+	if [ -f build-${MY_TARGET}/{BOOTLOADER_NAME}.raw ]; then
+		install build-${MY_TARGET}/{BOOTLOADER_NAME}.raw ${D}/boot
+	fi
 	if [ -f build-${MY_TARGET}/EMMCBOOT.MBN ]; then
 		install build-${MY_TARGET}/EMMCBOOT.MBN ${D}/boot
 	fi
@@ -44,6 +47,10 @@ FILES_${PN} = "/boot"
 do_deploy () {
         install ${S}/build-${MY_TARGET}/${BOOTLOADER_NAME}.mbn ${DEPLOYDIR}
 }
+
+#Disable the split of debug information into -dbg files
+INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+
 do_deploy[dirs] = "${S} ${DEPLOYDIR}"
 addtask deploy before do_build after do_install
 
