@@ -47,7 +47,7 @@ IMAGE_INSTALL += "libstdc++"
 #IMAGE_INSTALL += "camera-hal"
 IMAGE_INSTALL += "open-source-kernel-tests"
 #IMAGE_INSTALL += "libtbm-msm"
-#IMAGE_INSTALL += "libgenlock"
+IMAGE_INSTALL += "libgenlock"
 #IMAGE_INSTALL += "mm-image-codec"
 IMAGE_INSTALL += "init-audio"
 
