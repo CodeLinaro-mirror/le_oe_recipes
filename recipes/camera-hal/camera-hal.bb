@@ -48,7 +48,7 @@ CPPFLAGS += "-I${STAGING_INCDIR}/c++ \
              -I${STAGING_INCDIR}/c++/${TARGET_SYS}"
 
 FILES_${PN}_append_a-family += "/usr/lib/hw/*"
-FILES_${PN}_append_b-famliy += "/usr/lib/*"
+FILES_${PN}_append_b-family += "/usr/lib/*"
 
 # The camera-hal package contains symlinks that trip up insane
 INSANE_SKIP_${PN} = "dev-so"
