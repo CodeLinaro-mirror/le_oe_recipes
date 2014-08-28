@@ -20,6 +20,8 @@ IMAGE_INSTALL += "${POKY_BASE_INSTALL}"
 IMAGE_INSTALL += "xeyes"
 IMAGE_INSTALL += "xset"
 
+IMAGE_INSTALL += "bash"
+
 IMAGE_FEATURES += "x11-mini ssh-server-dropbear"
 
 IMAGE_LINGUAS = ""
