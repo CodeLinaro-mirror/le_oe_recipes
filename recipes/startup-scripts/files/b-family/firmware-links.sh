@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright (c) 2013, The Linux Foundation. All rights reserved.
+# Copyright (c) 2013-2014 The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -116,8 +116,8 @@ case $linksNeeded in
             ;;
       esac
 
-      case `ls mba.mdt 2>/dev/null` in
-         mba.mdt)
+      case `ls mba.{mdt,mbn} 2>/dev/null` in
+         mba.mdt | mba.mbn)
             for imgfile in mba*
             do
                ln -s /firmware/image/$imgfile /lib/firmware/$imgfile 2>/dev/null
