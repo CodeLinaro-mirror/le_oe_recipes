@@ -29,8 +29,7 @@ DEPENDS = "${RDEPENDS} \
            virtual/kernel \
            xdbg \
            xf86driproto \
-           xproto \
-           adreno200"
+           xproto "
 
 #TODO: remove this once adreno200 symlinks are fixed
 INSANE_SKIP_${PN} = "dev-deps"
