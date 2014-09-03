@@ -1,42 +1,35 @@
-diff --git a/include/utils/Vector.h b/include/utils/Vector.h
-index ec851bd..ba4fc7f 100644
---- a/include/utils/Vector.h
-+++ b/include/utils/Vector.h
-@@ -1,4 +1,23 @@
- /*
-+Copyright (c) 2014, The Linux Foundation. All rights reserved.
-+Not a Contribution.
-+
-+Copyright (C) 2005 The Android Open Source Project
-+
-+Licensed under the Apache License, Version 2.0 (the "License"); you
-+may not use this file except in compliance with the License.  You may
-+obtain a copy of the License at
-+
-+http://www.apache.org/licenses/LICENSE-2.0
-+
-+Unless required by applicable law or agreed to in writing, software
-+distributed under the License is distributed on an "AS IS" BASIS,
-+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-+implied.  See the License for the specific language governing
-+permissions and limitations under the License
-+*/
-+
-+/*
-  * Copyright (C) 2005 The Android Open Source Project
-  *
-  * Licensed under the Apache License, Version 2.0 (the "License");
-@@ -21,7 +40,12 @@
+--- camera-hal/QCamera2/HAL/utils/Vector-org.h	2014-09-26 20:48:39.733351102 +0530
++++ camera-hal/QCamera2/HAL/utils/Vector.h	2014-09-26 20:52:33.914770589 +0530
+@@ -21,7 +21,7 @@
  #include <stdint.h>
  #include <sys/types.h>
 
 -#include <utils/Log.h>
-+#if defined(USE_DLOG)
-+  #include <dlog/dlog.h>
-+#else
-+  #include <utils/Log.h>
-+#endif
-+
++//#include <utils/Log.h>
  #include <utils/VectorImpl.h>
  #include <utils/TypeHelpers.h>
+
+@@ -221,8 +221,8 @@ TYPE* Vector<TYPE>::editArray() {
+
+ template<class TYPE> inline
+ const TYPE& Vector<TYPE>::operator[](size_t index) const {
+-    LOG_FATAL_IF( index>=size(),
+-                  "itemAt: index %d is past size %d", (int)index, (int)size() );
++    //LOG_FATAL_IF( index>=size(),
++      //            "itemAt: index %d is past size %d", (int)index, (int)size() );
+     return *(array() + index);
+ }
+
+@@ -233,9 +233,9 @@ const TYPE& Vector<TYPE>::itemAt(size_t
+
+ template<class TYPE> inline
+ const TYPE& Vector<TYPE>::mirrorItemAt(ssize_t index) const {
+-    LOG_FATAL_IF( (index>0 ? index : -index)>=size(),
+-                  "mirrorItemAt: index %d is past size %d",
+-                  (int)index, (int)size() );
++    //LOG_FATAL_IF( (index>0 ? index : -index)>=size(),
++      //            "mirrorItemAt: index %d is past size %d",
++        //          (int)index, (int)size() );
+     return *(array() + ((index<0) ? (size()-index) : index));
+ }
 
