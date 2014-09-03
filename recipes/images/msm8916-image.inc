@@ -50,6 +50,7 @@ IMAGE_INSTALL += "open-source-kernel-tests"
 IMAGE_INSTALL += "libtbm-msm"
 IMAGE_INSTALL += "libgenlock"
 #IMAGE_INSTALL += "mm-image-codec"
+IMAGE_INSTALL += "alsa-intf"
 IMAGE_INSTALL += "init-audio"
 
 # Convenience: build a compatible GDB and install gdbserver on the image
