@@ -25,7 +25,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 KDIR = "/kernel"
 SRC_DIR = "${WORKSPACE}/kernel"
 PV = "git-${GITSHA}"
-PR = "r8"
+PR = "r9"
 
 PROVIDES += "virtual/kernel"
 DEPENDS = "virtual/${TARGET_PREFIX}gcc dtbtool-native mkbootimg-native  dtbtool-native mkbootimg-native"
@@ -79,6 +79,8 @@ CFLAGS_pn-${PN} = ""
 CPPFLAGS_pn-${PN} = ""
 CXXFLAGS_pn-${PN} = ""
 LDFLAGS_pn-${PN} = ""
+
+DO_SIGN_KERNEL := ${@base_contains('DISTRO_FEATURES', 'signed-kernel', 1, 0, d)}
 
 export ARCH = "${TARGET_ARCH}"
 export CROSS_COMPILE = "${TARGET_PREFIX}"
@@ -181,7 +183,7 @@ do_deploy () {
 
     mkdir -p ${DEPLOY_DIR_IMAGE}
     machine=`echo ${MACHINE}`
-     __cmdparams='console=${MACHINE_CONSOLE},115200,n8 noinitrd earlyprintk root=${MACHINE_ROOTDEV} rw init=/sbin/init androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci mem=512M@0x80000000'
+     __cmdparams='console=${MACHINE_CONSOLE},115200,n8 noinitrd root=${MACHINE_ROOTDEV} rw init=/sbin/init androidboot.hardware=qcom ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci'
     cmdparams=`echo ${__cmdparams}`
     # Updated base address according to new memory map.
     ${STAGING_BINDIR_NATIVE}/mkbootimg --kernel ${STAGING_DIR_TARGET}/boot/zImage-${ver} \
@@ -191,6 +193,16 @@ do_deploy () {
         --base ${MACHINE_KERNEL_BASE} \
         --tags-addr ${MACHINE_KERNEL_TAGS_OFFSET} \
         --output ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img
+
+    if test ${DO_SIGN_KERNEL} -eq 1; then
+        cp ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img boot.img.nonsecure
+        ${STAGING_BINDIR_NATIVE}/openssl dgst -${TARGET_SHA_TYPE} -binary boot.img.nonsecure > boot.img.${TARGET_SHA_TYPE}
+        ${STAGING_BINDIR_NATIVE}/openssl rsautl -sign -in boot.img.${TARGET_SHA_TYPE} -inkey ${WORKSPACE}/${PRODUCT_PRIVATE_KEY} -out boot.img.sig
+        dd if=/dev/zero of=boot.img.sig.padded bs=${MACHINE_FLASH_PAGE_SIZE} count=1
+        dd if=boot.img.sig of=boot.img.sig.padded conv=notrunc
+        cat boot.img.nonsecure boot.img.sig.padded > ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img
+        rm -rf boot.img.nonsecure boot.img.${TARGET_SHA_TYPE} boot.img.sig boot.img.sig.padded
+    fi
 }
 
 addtask deploy before do_build after do_install
