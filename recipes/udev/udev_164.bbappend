@@ -14,6 +14,12 @@ SRC_URI_append_msm8610 += "file://${BASEMACHINE}/local.rules \
 SRC_URI_append_msm8226 += "file://${BASEMACHINE}/local.rules \
                            file://${BASEMACHINE}/set-dev-nodes.sh"
 
+pkg_postinst () {
+        [ -n "$D" ] && OPT="-r $D" || OPT="-s"
+        update-rc.d $OPT -f udev remove
+        update-rc.d $OPT -f udev-cache remove
+}
+
 do_install_append_msm8974 () {
      install -d ${D}${sysconfdir}/udev/scripts/
      install -m 0755 ${FILESEXTRAPATHS}/${BASEMACHINE}/set-dev-nodes.sh ${D}${sysconfdir}/udev/scripts/set-dev-nodes.sh
