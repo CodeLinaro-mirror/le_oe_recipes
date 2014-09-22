@@ -17,8 +17,8 @@ KERNEL_DEFCONFIG_mdm9625       = "msm9625_defconfig"
 KERNEL_DEFCONFIG_mdm9625-perf  = "msm9625-perf_defconfig"
 KERNEL_DEFCONFIG_mdm9635       = "mdm9630_defconfig"
 KERNEL_DEFCONFIG_mdm9635-perf  = "mdm9630-perf_defconfig"
-KERNEL_DEFCONFIG_msm8916       = "msm8916_defconfig"
-KERNEL_DEFCONFIG_msm8916-perf  = "msm8916-perf_defconfig"
+KERNEL_DEFCONFIG_msm8916       = "msm8916-512mb_defconfig"
+KERNEL_DEFCONFIG_msm8916-perf  = "msm8916-512mb-perf_defconfig"
 KERNEL_DEFCONFIG              ?= "msm9625_defconfig"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
@@ -183,7 +183,7 @@ do_deploy () {
 
     mkdir -p ${DEPLOY_DIR_IMAGE}
     machine=`echo ${MACHINE}`
-     __cmdparams='console=${MACHINE_CONSOLE},115200,n8 noinitrd root=${MACHINE_ROOTDEV} rw init=/sbin/init androidboot.hardware=qcom ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci'
+     __cmdparams='console=${MACHINE_CONSOLE},115200,n8 noinitrd root=${MACHINE_ROOTDEV} rw init=/sbin/init androidboot.hardware=qcom ehci-hcd.park=3 androidboot.bootdevice=7824900.sdhci mem=512M@0x80000000'
     cmdparams=`echo ${__cmdparams}`
     # Updated base address according to new memory map.
     ${STAGING_BINDIR_NATIVE}/mkbootimg --kernel ${STAGING_DIR_TARGET}/boot/zImage-${ver} \
