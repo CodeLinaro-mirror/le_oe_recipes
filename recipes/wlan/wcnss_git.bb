@@ -17,12 +17,7 @@ do_install() {
     install set_wcnss_mode ${D}/etc/init.d
 }
 
-do_install_append_msm8610() {
-   mkdir -p ${D}/lib/firmware/wlan/prima
-   cp -pPr ${S}/firmware_bin/* ${D}/lib/firmware/wlan/prima
-}
-
-do_install_append_msm8226() {
+do_install_append() {
    mkdir -p ${D}/lib/firmware/wlan/prima
    cp -pPr ${S}/firmware_bin/* ${D}/lib/firmware/wlan/prima
 }
