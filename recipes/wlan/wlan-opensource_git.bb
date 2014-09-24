@@ -16,6 +16,8 @@ inherit module
 EXTRA_OEMAKE += "CONFIG_PRONTO_WLAN=m \
                  KERNEL_BUILD=1"
 
+PACKAGES += "kernel-module-wlan"
+
 do_compile () {
     unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS CC CPP LD
     oe_runmake 'MODPATH="${base_libdir}/modules/wlan/prima"' \
@@ -27,6 +29,15 @@ do_compile () {
 }
 
 do_install () {
-    install -d ${D}${base_libdir}/modules/wlan/prima
-    install -m 0644 ${S}/wlan.ko ${D}${base_libdir}/modules/wlan/prima
+    module_do_install
+    install -m 0644 CORE/SVC/external/wlan_nlink_common.h -D ${D}${includedir}/prima/wlan_nlink_common.h
 }
+
+# Remove dependency for wrong kernel version
+python split_kernel_module_packages_append() {
+    if modules:
+	metapkg = d.getVar('KERNEL_MODULES_META_PACKAGE', True)
+	d.delVar('RDEPENDS_' + metapkg)
+	d.delVar('RDEPENDS_kernel-module-wlan')
+}
+
