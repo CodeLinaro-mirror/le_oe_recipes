@@ -2,7 +2,6 @@ require bluez5.inc
 
 PR = "r0"
 
-SRC_URI += "file://bluetooth.conf"
 SRC_URI += "file://0001-bluetooth-Add-bluetooth-support-for-QCA6174-chip.patch \
             file://0002-bluetooth-Enable-3Mbps-baud-rate-support.patch \
             file://0003-bluetooth-Remove-unused-functions-in-the-firmware-do.patch \
@@ -20,7 +19,7 @@ do_install_append() {
         install -m 0644 ${S}/profiles/network/network.conf ${D}/${sysconfdir}/bluetooth/
         install -m 0644 ${S}/profiles/input/input.conf ${D}/${sysconfdir}/bluetooth/
         # at_console doesn't really work with the current state of OE, so punch some more holes so people can actually use BT
-        install -m 0644 ${WORKDIR}/bluetooth.conf ${D}/${sysconfdir}/dbus-1/system.d/
+        install -m 0644 ${S}/src/bluetooth.conf ${D}/${sysconfdir}/dbus-1/system.d/
 }
 
 RDEPENDS_${PN}-dev = "bluez-hcidump"
