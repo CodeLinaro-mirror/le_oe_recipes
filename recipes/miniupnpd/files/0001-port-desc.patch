@@ -1,22 +1,28 @@
-From 59cf646f624f677aac9ff94733d87965763ad82a Mon Sep 17 00:00:00 2001
+From 0232000f626a7dc29d6eaa58754df9b72a082cbe Mon Sep 17 00:00:00 2001
 From: Tyler Wear <twear@codeaurora.org>
-Date: Thu, 31 Jul 2014 11:12:43 -0700
+Date: Thu, 16 Oct 2014 11:46:43 -0700
 Subject: [PATCH 1/1] port-desc
 
 ---
- commonrdr.h         | 14 ++++++++++----
- netfilter/iptcrdr.c |  6 +++++-
- 2 files changed, 15 insertions(+), 5 deletions(-)
+ commonrdr.h         | 15 +++++++++++----
+ netfilter/iptcrdr.c |  7 ++++++-
+ 2 files changed, 17 insertions(+), 5 deletions(-)
  mode change 100644 => 100755 commonrdr.h
  mode change 100644 => 100755 netfilter/iptcrdr.c
 
 diff --git a/commonrdr.h b/commonrdr.h
 old mode 100644
 new mode 100755
-index 7c0bd7c..96b2833
+index 7c0bd7c..7a22cbf
 --- a/commonrdr.h
 +++ b/commonrdr.h
-@@ -30,8 +30,11 @@ get_redirect_rule(const char * ifname, unsigned short eport, int proto,
+@@ -1,4 +1,5 @@
+ /* $Id: commonrdr.h,v 1.9 2014/02/11 09:36:15 nanard Exp $ */
++/* Copyright (c) 2014, The Linux Foundation. All rights reserved. */
+ /* MiniUPnP project
+  * (c) 2006-2014 Thomas Bernard
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+@@ -30,8 +31,11 @@ get_redirect_rule(const char * ifname, unsigned short eport, int proto,
                    char * iaddr, int iaddrlen, unsigned short * iport,
                    char * desc, int desclen,
                    char * rhost, int rhostlen,
@@ -30,7 +36,7 @@ index 7c0bd7c..96b2833
  
  /* get_redirect_rule_by_index()
   * return values :
-@@ -43,8 +46,11 @@ get_redirect_rule_by_index(int index,
+@@ -43,8 +47,11 @@ get_redirect_rule_by_index(int index,
                             char * iaddr, int iaddrlen, unsigned short * iport,
                             int * proto, char * desc, int desclen,
                             char * rhost, int rhostlen,
@@ -47,10 +53,14 @@ index 7c0bd7c..96b2833
 diff --git a/netfilter/iptcrdr.c b/netfilter/iptcrdr.c
 old mode 100644
 new mode 100755
-index a93c1cf..cfa24e5
+index a93c1cf..4696a1b
 --- a/netfilter/iptcrdr.c
 +++ b/netfilter/iptcrdr.c
-@@ -4,7 +4,9 @@
+@@ -1,10 +1,13 @@
+ /* $Id: iptcrdr.c,v 1.52 2014/03/28 12:03:36 nanard Exp $ */
++/* Copyright (c) 2014, The Linux Foundation. All rights reserved. */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
   * (c) 2006-2011 Thomas Bernard
   * This software is subject to the conditions detailed
   * in the LICENCE file provided within the distribution */
@@ -60,7 +70,7 @@ index a93c1cf..cfa24e5
  #include <stdlib.h>
  #include <string.h>
  #include <syslog.h>
-@@ -101,7 +103,7 @@ static int snprintip(char * dst, size_t size, uint32_t ip)
+@@ -101,7 +104,7 @@ static int snprintip(char * dst, size_t size, uint32_t ip)
  	       "%u.%u.%u.%u", ip >> 24, (ip >> 16) & 0xff,
  	       (ip >> 8) & 0xff, ip & 0xff);
  }
@@ -69,7 +79,7 @@ index a93c1cf..cfa24e5
  /* netfilter cannot store redirection descriptions, so we use our
   * own structure to store them */
  struct rdr_desc {
-@@ -211,6 +213,7 @@ get_redirect_desc_by_index(int index, unsigned short * eport, int * proto,
+@@ -211,6 +214,7 @@ get_redirect_desc_by_index(int index, unsigned short * eport, int * proto,
  }
  #endif
  
@@ -77,7 +87,7 @@ index a93c1cf..cfa24e5
  /* add_redirect_rule2() */
  int
  add_redirect_rule2(const char * ifname,
-@@ -1544,3 +1547,4 @@ list_redirect_rule(const char * ifname)
+@@ -1544,3 +1548,4 @@ list_redirect_rule(const char * ifname)
  	return 0;
  }
  #endif

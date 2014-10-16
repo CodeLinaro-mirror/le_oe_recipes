@@ -1,20 +1,26 @@
-From 54ef0d53b83c394b1627581fe963c602f969b194 Mon Sep 17 00:00:00 2001
+From 1b1d79499d68582abb616f7b7dbe8324d1db4ba9 Mon Sep 17 00:00:00 2001
 From: Tyler Wear <twear@codeaurora.org>
-Date: Thu, 31 Jul 2014 11:13:30 -0700
+Date: Thu, 16 Oct 2014 11:50:01 -0700
 Subject: [PATCH 1/1] presentation-page
 
 ---
- upnphttp.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ upnphttp.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
  mode change 100644 => 100755 upnphttp.c
 
 diff --git a/upnphttp.c b/upnphttp.c
 old mode 100644
 new mode 100755
-index f869fe5..dcbfb13
+index f869fe5..6f98fd7
 --- a/upnphttp.c
 +++ b/upnphttp.c
-@@ -28,6 +28,7 @@
+@@ -1,4 +1,5 @@
+ /* $Id: upnphttp.c,v 1.92 2014/04/11 08:15:43 nanard Exp $ */
++/* Copyright (c) 2014, The Linux Foundation. All rights reserved. */
+ /* Project :  miniupnp
+  * Website :  http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+  * Author :   Thomas Bernard
+@@ -28,6 +29,7 @@
  #include "upnpsoap.h"
  #include "upnpevents.h"
  #include "upnputils.h"
@@ -22,7 +28,7 @@ index f869fe5..dcbfb13
  
  #ifdef ENABLE_HTTPS
  #include <openssl/err.h>
-@@ -690,6 +691,26 @@ ProcessHTTPUnSubscribe_upnphttp(struct upnphttp * h, const char * path)
+@@ -690,6 +692,26 @@ ProcessHTTPUnSubscribe_upnphttp(struct upnphttp * h, const char * path)
  }
  #endif
  
@@ -49,7 +55,7 @@ index f869fe5..dcbfb13
  /* Parse and process Http Query
   * called once all the HTTP headers have been received,
   * so it is guaranteed that h->req_buf contains the \r\n\r\n
-@@ -783,6 +804,12 @@ ProcessHttpQuery_upnphttp(struct upnphttp * h)
+@@ -783,6 +805,12 @@ ProcessHttpQuery_upnphttp(struct upnphttp * h)
  			return;
  		}
  #endif
