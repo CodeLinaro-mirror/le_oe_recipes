@@ -1,20 +1,20 @@
-From 33a6458267c8061450858d563cf43356307d7a08 Mon Sep 17 00:00:00 2001
+From 8d41d639b40bef3bd98e1525cbcfc3f2701268cd Mon Sep 17 00:00:00 2001
 From: Tyler Wear <twear@codeaurora.org>
-Date: Fri, 26 Sep 2014 09:00:50 -0700
+Date: Thu, 16 Oct 2014 11:41:18 -0700
 Subject: [PATCH 1/1] certification-fixes
 
 ---
  config.h                      | 140 ++++++++++++++++++++++++++++++++++++++++++
  getifstats.h                  |   6 ++
  linux/miniupnpd.init.d.script |  15 -----
- miniupnpd.c                   |  33 +++++++++-
+ miniupnpd.c                   |  34 +++++++++-
  miniupnpd.conf                |  20 +++---
- natpmp.c                      |  12 +++-
- pcpserver.c                   |  19 +++++-
- upnpredirect.c                |  81 +++++++++++++++++++++++-
- upnpredirect.h                |  17 ++++-
- upnpsoap.c                    | 119 ++++++++++++++++++++++++++++++++---
- 10 files changed, 415 insertions(+), 47 deletions(-)
+ natpmp.c                      |  13 +++-
+ pcpserver.c                   |  20 +++++-
+ upnpredirect.c                |  82 ++++++++++++++++++++++++-
+ upnpredirect.h                |  18 +++++-
+ upnpsoap.c                    | 120 +++++++++++++++++++++++++++++++++---
+ 10 files changed, 421 insertions(+), 47 deletions(-)
  create mode 100755 config.h
  mode change 100644 => 100755 getifstats.h
  mode change 100644 => 100755 linux/miniupnpd.init.d.script
@@ -240,10 +240,16 @@ index ee6e47b..b29c249
 diff --git a/miniupnpd.c b/miniupnpd.c
 old mode 100644
 new mode 100755
-index e22ba13..991011a
+index e22ba13..8bd615b
 --- a/miniupnpd.c
 +++ b/miniupnpd.c
-@@ -1347,7 +1347,11 @@ init(int argc, char * * argv, struct runtime_vars * v)
+@@ -1,4 +1,5 @@
+ /* $Id: miniupnpd.c,v 1.200 2014/05/22 07:56:34 nanard Exp $ */
++/* Copyright (c) 2014, The Linux Foundation. All rights reserved. */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+  * (c) 2006-2014 Thomas Bernard
+@@ -1347,7 +1348,11 @@ init(int argc, char * * argv, struct runtime_vars * v)
  			fprintf(stderr, "Unknown option: %s\n", argv[i]);
  		}
  	}
@@ -256,7 +262,7 @@ index e22ba13..991011a
  	{
  		/* bad configuration */
  		goto print_usage;
-@@ -1433,9 +1437,15 @@ init(int argc, char * * argv, struct runtime_vars * v)
+@@ -1433,9 +1438,15 @@ init(int argc, char * * argv, struct runtime_vars * v)
  	srandom((unsigned int)time(NULL));
  
  	/* initialize redirection engine (and pinholes) */
@@ -272,7 +278,7 @@ index e22ba13..991011a
  		return 1;
  	}
  #ifdef ENABLE_UPNPPINHOLE
-@@ -1623,7 +1633,11 @@ main(int argc, char * * argv)
+@@ -1623,7 +1634,11 @@ main(int argc, char * * argv)
  		return 0;
  	}
  
@@ -284,7 +290,7 @@ index e22ba13..991011a
  #ifdef ENABLE_NATPMP
  #ifdef ENABLE_PCP
  	       GETFLAG(ENABLENATPMPMASK) ? " NAT-PMP/PCP " : " ",
-@@ -1633,8 +1647,12 @@ main(int argc, char * * argv)
+@@ -1633,8 +1648,12 @@ main(int argc, char * * argv)
  #else
  	       " ",
  #endif
@@ -299,7 +305,7 @@ index e22ba13..991011a
  
  	if(GETFLAG(ENABLEUPNPMASK))
  	{
-@@ -2279,6 +2297,7 @@ main(int argc, char * * argv)
+@@ -2279,6 +2298,7 @@ main(int argc, char * * argv)
  
  shutdown:
  	syslog(LOG_NOTICE, "shutting down MiniUPnPd");
@@ -307,7 +313,7 @@ index e22ba13..991011a
  	/* send good-bye */
  	if (GETFLAG(ENABLEUPNPMASK))
  	{
-@@ -2294,6 +2313,14 @@ shutdown:
+@@ -2294,6 +2314,14 @@ shutdown:
  	/* try to send pending packets */
  	finalize_sendto();
  
@@ -382,10 +388,16 @@ index 466abd6..871ccb3
 diff --git a/natpmp.c b/natpmp.c
 old mode 100644
 new mode 100755
-index 2fd9ed5..4ea63ef
+index 2fd9ed5..f7886bd
 --- a/natpmp.c
 +++ b/natpmp.c
-@@ -314,6 +314,7 @@ void ProcessIncomingNATPMPPacket(int s, unsigned char *msg_buff, int len,
+@@ -1,4 +1,5 @@
+ /* $Id: natpmp.c,v 1.48 2014/05/19 13:38:03 nanard Exp $ */
++/* Copyright (c) 2014, The Linux Foundation. All rights reserved. */
+ /* MiniUPnP project
+  * (c) 2007-2014 Thomas Bernard
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+@@ -314,6 +315,7 @@ void ProcessIncomingNATPMPPacket(int s, unsigned char *msg_buff, int len,
  				/* remove the mapping */
  				if(iport == 0) {
  					/* remove all the mappings for this client */
@@ -393,7 +405,7 @@ index 2fd9ed5..4ea63ef
  					int index = 0;
  					unsigned short eport2, iport2;
  					char iaddr2[16];
-@@ -341,6 +342,7 @@ void ProcessIncomingNATPMPPacket(int s, unsigned char *msg_buff, int len,
+@@ -341,6 +343,7 @@ void ProcessIncomingNATPMPPacket(int s, unsigned char *msg_buff, int len,
  							index++;
  						}
  					}
@@ -401,7 +413,7 @@ index 2fd9ed5..4ea63ef
  				} else {
  					/* To improve the interworking between nat-pmp and
  					 * UPnP, we should check that we remove only NAT-PMP
-@@ -390,10 +392,14 @@ void ProcessIncomingNATPMPPacket(int s, unsigned char *msg_buff, int len,
+@@ -390,10 +393,14 @@ void ProcessIncomingNATPMPPacket(int s, unsigned char *msg_buff, int len,
  						continue;
  					}
  #endif
@@ -416,7 +428,7 @@ index 2fd9ed5..4ea63ef
  					if(r==0) {
  						if(strcmp(senderaddrstr, iaddr_old)==0
  						    && iport==iport_old) {
-@@ -422,7 +428,11 @@ void ProcessIncomingNATPMPPacket(int s, unsigned char *msg_buff, int len,
+@@ -422,7 +429,11 @@ void ProcessIncomingNATPMPPacket(int s, unsigned char *msg_buff, int len,
  					         eport, (proto==IPPROTO_TCP)?"tcp":"udp");
  #endif
  					/* TODO : check return code */
@@ -432,10 +444,16 @@ index 2fd9ed5..4ea63ef
 diff --git a/pcpserver.c b/pcpserver.c
 old mode 100644
 new mode 100755
-index e5f0cc6..392ea99
+index e5f0cc6..a8c44fe
 --- a/pcpserver.c
 +++ b/pcpserver.c
-@@ -962,13 +962,18 @@ static int CreatePCPMap_NAT(pcp_info_t *pcp_msg_info)
+@@ -1,4 +1,5 @@
+ /* $Id: pcpserver.c,v 1.36 2014/05/22 07:51:08 nanard Exp $ */
++/* Copyright (c) 2014, The Linux Foundation. All rights reserved. */
+ /* MiniUPnP project
+  * Website : http://miniupnp.free.fr/
+  * Author : Peter Tatrai
+@@ -962,13 +963,18 @@ static int CreatePCPMap_NAT(pcp_info_t *pcp_msg_info)
  			continue;
  		}
  #endif
@@ -455,7 +473,7 @@ index e5f0cc6..392ea99
  		if(r==0) {
  			if((strcmp(pcp_msg_info->mapped_str, iaddr_old)!=0)
  			   || (pcp_msg_info->int_port != iport_old)) {
-@@ -995,7 +1000,10 @@ static int CreatePCPMap_NAT(pcp_info_t *pcp_msg_info)
+@@ -995,7 +1001,10 @@ static int CreatePCPMap_NAT(pcp_info_t *pcp_msg_info)
  		}
  	} while (r==0);
  
@@ -467,7 +485,7 @@ index e5f0cc6..392ea99
  				   pcp_msg_info->ext_port,
  				   pcp_msg_info->mapped_str,
  				   pcp_msg_info->int_port,
-@@ -1093,11 +1101,16 @@ static void DeletePCPMap(pcp_info_t *pcp_msg_info)
+@@ -1093,11 +1102,16 @@ static void DeletePCPMap(pcp_info_t *pcp_msg_info)
  	/* iterate through all rules and delete the requested ones */
  	for (index = 0 ;
  	     (!pcp_msg_info->is_fw &&
@@ -488,10 +506,16 @@ index e5f0cc6..392ea99
 diff --git a/upnpredirect.c b/upnpredirect.c
 old mode 100644
 new mode 100755
-index b3d9a65..2c9890f
+index b3d9a65..ffbc0c8
 --- a/upnpredirect.c
 +++ b/upnpredirect.c
-@@ -43,6 +43,9 @@
+@@ -1,4 +1,5 @@
+ /* $Id: upnpredirect.c,v 1.84 2014/03/28 12:03:28 nanard Exp $ */
++/* Copyright (c) 2014, The Linux Foundation. All rights reserved. */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+  * (c) 2006-2014 Thomas Bernard
+@@ -43,6 +44,9 @@
  #ifdef ENABLE_LEASEFILE
  #include <sys/stat.h>
  #endif
@@ -501,7 +525,7 @@ index b3d9a65..2c9890f
  
  /* from <inttypes.h> */
  #ifndef PRIu64
-@@ -256,7 +259,11 @@ int reload_from_lease_file()
+@@ -256,7 +260,11 @@ int reload_from_lease_file()
   *          -3 permission check failed
   */
  int
@@ -513,7 +537,7 @@ index b3d9a65..2c9890f
                const char * iaddr, unsigned short iport,
                const char * protocol, const char * desc,
                unsigned int leaseduration)
-@@ -279,6 +286,7 @@ upnp_redirect(const char * rhost, unsigned short eport,
+@@ -279,6 +287,7 @@ upnp_redirect(const char * rhost, unsigned short eport,
  		                 "%hu->%s:%hu %s", eport, iaddr, iport, protocol);
  		return -3;
  	}
@@ -521,7 +545,7 @@ index b3d9a65..2c9890f
  	r = get_redirect_rule(ext_if_name, eport, proto,
  	                      iaddr_old, sizeof(iaddr_old), &iport_old, 0, 0,
  	                      0, 0,
-@@ -302,32 +310,44 @@ upnp_redirect(const char * rhost, unsigned short eport,
+@@ -302,32 +311,44 @@ upnp_redirect(const char * rhost, unsigned short eport,
  		return -2;
  #endif /* CHECK_PORTINUSE */
  	} else {
@@ -567,7 +591,7 @@ index b3d9a65..2c9890f
  /*	syslog(LOG_INFO, "creating pass rule to %s:%hu protocol %s for: %s",
  		iaddr, iport, protocol, desc);*/
  	if(add_filter_rule2(ext_if_name, rhost, iaddr, eport, iport, proto, desc) < 0) {
-@@ -335,8 +355,21 @@ upnp_redirect_internal(const char * rhost, unsigned short eport,
+@@ -335,8 +356,21 @@ upnp_redirect_internal(const char * rhost, unsigned short eport,
  #if !defined(__linux__)
  		delete_redirect_rule(ext_if_name, eport, proto);
  #endif
@@ -589,7 +613,7 @@ index b3d9a65..2c9890f
  	if(timestamp > 0) {
  		if(!nextruletoclean_timestamp || (timestamp < nextruletoclean_timestamp))
  			nextruletoclean_timestamp = timestamp;
-@@ -368,17 +401,30 @@ upnp_get_redirection_infos(unsigned short eport, const char * protocol,
+@@ -368,17 +402,30 @@ upnp_get_redirection_infos(unsigned short eport, const char * protocol,
  		desc[0] = '\0';
  	if(rhost && (rhostlen > 0))
  		rhost[0] = '\0';
@@ -620,7 +644,7 @@ index b3d9a65..2c9890f
  	return r;
  }
  
-@@ -400,13 +446,20 @@ upnp_get_redirection_infos_by_index(int index,
+@@ -400,13 +447,20 @@ upnp_get_redirection_infos_by_index(int index,
  		desc[0] = '\0';
  	if(rhost && (rhostlen > 0))
  		rhost[0] = '\0';
@@ -641,7 +665,7 @@ index b3d9a65..2c9890f
  		current_time = time(NULL);
  		*leaseduration = (timestamp > (unsigned int)current_time)
  		                 ? (timestamp - current_time)
-@@ -425,7 +478,11 @@ _upnp_delete_redir(unsigned short eport, int proto)
+@@ -425,7 +479,11 @@ _upnp_delete_redir(unsigned short eport, int proto)
  {
  	int r;
  #if defined(__linux__)
@@ -653,7 +677,7 @@ index b3d9a65..2c9890f
  #elif defined(USE_PF)
  	r = delete_redirect_and_filter_rules(ext_if_name, eport, proto);
  #else
-@@ -439,6 +496,10 @@ _upnp_delete_redir(unsigned short eport, int proto)
+@@ -439,6 +497,10 @@ _upnp_delete_redir(unsigned short eport, int proto)
  #ifdef ENABLE_EVENTS
  	upnp_event_var_change_notify(EWanIPC);
  #endif
@@ -664,7 +688,7 @@ index b3d9a65..2c9890f
  	return r;
  }
  
-@@ -491,11 +552,18 @@ get_upnp_rules_state_list(int max_rules_number_target)
+@@ -491,11 +553,18 @@ get_upnp_rules_state_list(int max_rules_number_target)
  		return 0;
  	current_time = time(NULL);
  	nextruletoclean_timestamp = 0;
@@ -683,7 +707,7 @@ index b3d9a65..2c9890f
  		if(timestamp > 0) {
  			/* need to remove this port mapping ? */
  			if(timestamp <= (unsigned int)current_time)
-@@ -582,6 +650,7 @@ remove_unused_rules(struct rule_state * list)
+@@ -582,6 +651,7 @@ remove_unused_rules(struct rule_state * list)
  	while(list)
  	{
  		/* remove the rule if no traffic has used it */
@@ -691,7 +715,7 @@ index b3d9a65..2c9890f
  		if(get_redirect_rule(ifname, list->eport, list->proto,
  	                         0, 0, &iport, 0, 0, 0, 0, &timestamp,
  		                     &packets, &bytes) >= 0)
-@@ -592,6 +661,7 @@ remove_unused_rules(struct rule_state * list)
+@@ -592,6 +662,7 @@ remove_unused_rules(struct rule_state * list)
  				n++;
  			}
  		}
@@ -699,7 +723,7 @@ index b3d9a65..2c9890f
  		tmp = list;
  		list = tmp->next;
  		free(tmp);
-@@ -604,8 +674,11 @@ remove_unused_rules(struct rule_state * list)
+@@ -604,8 +675,11 @@ remove_unused_rules(struct rule_state * list)
   * return a list of all "external" ports for which a port
   * mapping exists */
  unsigned short *
@@ -712,7 +736,7 @@ index b3d9a65..2c9890f
                                 const char * protocol,
                                 unsigned int * number)
  {
-@@ -613,7 +686,11 @@ upnp_get_portmappings_in_range(unsigned short startport,
+@@ -613,7 +687,11 @@ upnp_get_portmappings_in_range(unsigned short startport,
  	proto = proto_atoi(protocol);
  	if(!number)
  		return NULL;
@@ -727,10 +751,16 @@ index b3d9a65..2c9890f
 diff --git a/upnpredirect.h b/upnpredirect.h
 old mode 100644
 new mode 100755
-index b549824..311abba
+index b549824..a70a262
 --- a/upnpredirect.h
 +++ b/upnpredirect.h
-@@ -26,7 +26,11 @@ int reload_from_lease_file(void);
+@@ -1,4 +1,5 @@
+ /* $Id: upnpredirect.h,v 1.35 2012/09/27 15:47:15 nanard Exp $ */
++/* Copyright (c) 2014, The Linux Foundation. All rights reserved. */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+  * (c) 2006-2012 Thomas Bernard
+@@ -26,7 +27,11 @@ int reload_from_lease_file(void);
   *          -3 permission check failed
   */
  int
@@ -743,7 +773,7 @@ index b549824..311abba
                const char * iaddr, unsigned short iport,
                const char * protocol, const char * desc,
                unsigned int leaseduration);
-@@ -34,7 +38,11 @@ upnp_redirect(const char * rhost, unsigned short eport,
+@@ -34,7 +39,11 @@ upnp_redirect(const char * rhost, unsigned short eport,
  /* upnp_redirect_internal()
   * same as upnp_redirect() without any check */
  int
@@ -756,7 +786,7 @@ index b549824..311abba
                         const char * iaddr, unsigned short iport,
                         int proto, const char * desc,
                         unsigned int timestamp);
-@@ -103,8 +111,11 @@ remove_unused_rules(struct rule_state * list);
+@@ -103,8 +112,11 @@ remove_unused_rules(struct rule_state * list);
   * return a list of all "external" ports for which a port
   * mapping exists */
  unsigned short *
@@ -772,10 +802,16 @@ index b549824..311abba
 diff --git a/upnpsoap.c b/upnpsoap.c
 old mode 100644
 new mode 100755
-index dd5e069..6255bc3
+index dd5e069..b667f49
 --- a/upnpsoap.c
 +++ b/upnpsoap.c
-@@ -88,8 +88,11 @@ GetTotalBytesSent(struct upnphttp * h, const char * action)
+@@ -1,4 +1,5 @@
+ /* $Id: upnpsoap.c,v 1.127 2014/05/15 10:15:04 nanard Exp $ */
++/* Copyright (c) 2014, The Linux Foundation. All rights reserved. */
+ /* MiniUPnP project
+  * http://miniupnp.free.fr/ or http://miniupnp.tuxfamily.org/
+  * (c) 2006-2014 Thomas Bernard
+@@ -88,8 +89,11 @@ GetTotalBytesSent(struct upnphttp * h, const char * action)
  	char body[512];
  	int bodylen;
  	struct ifdata data;
@@ -788,7 +824,7 @@ index dd5e069..6255bc3
  	bodylen = snprintf(body, sizeof(body), resp,
  	         action, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1",
               r<0?0:data.obytes, action);
-@@ -110,8 +113,11 @@ GetTotalBytesReceived(struct upnphttp * h, const char * action)
+@@ -110,8 +114,11 @@ GetTotalBytesReceived(struct upnphttp * h, const char * action)
  	char body[512];
  	int bodylen;
  	struct ifdata data;
@@ -801,7 +837,7 @@ index dd5e069..6255bc3
  	bodylen = snprintf(body, sizeof(body), resp,
  	         action, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1",
  	         r<0?0:data.ibytes, action);
-@@ -132,8 +138,11 @@ GetTotalPacketsSent(struct upnphttp * h, const char * action)
+@@ -132,8 +139,11 @@ GetTotalPacketsSent(struct upnphttp * h, const char * action)
  	char body[512];
  	int bodylen;
  	struct ifdata data;
@@ -814,7 +850,7 @@ index dd5e069..6255bc3
  	bodylen = snprintf(body, sizeof(body), resp,
  	         action, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1",
  	         r<0?0:data.opackets, action);
-@@ -154,8 +163,11 @@ GetTotalPacketsReceived(struct upnphttp * h, const char * action)
+@@ -154,8 +164,11 @@ GetTotalPacketsReceived(struct upnphttp * h, const char * action)
  	char body[512];
  	int bodylen;
  	struct ifdata data;
@@ -827,7 +863,7 @@ index dd5e069..6255bc3
  	bodylen = snprintf(body, sizeof(body), resp,
  	         action, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1",
  	         r<0?0:data.ipackets, action);
-@@ -184,6 +196,7 @@ GetCommonLinkProperties(struct upnphttp * h, const char * action)
+@@ -184,6 +197,7 @@ GetCommonLinkProperties(struct upnphttp * h, const char * action)
  	                             * Initializing, Unavailable (Optional) */
  	char ext_ip_addr[INET_ADDRSTRLEN];
  
@@ -835,7 +871,7 @@ index dd5e069..6255bc3
  	if((downstream_bitrate == 0) || (upstream_bitrate == 0))
  	{
  		if(getifstats(ext_if_name, &data) >= 0)
-@@ -193,6 +206,19 @@ GetCommonLinkProperties(struct upnphttp * h, const char * action)
+@@ -193,6 +207,19 @@ GetCommonLinkProperties(struct upnphttp * h, const char * action)
  		}
  	}
  	if(getifaddr(ext_if_name, ext_ip_addr, INET_ADDRSTRLEN, NULL, NULL) < 0) {
@@ -855,7 +891,7 @@ index dd5e069..6255bc3
  		status = "Down";
  	}
  	bodylen = snprintf(body, sizeof(body), resp,
-@@ -220,8 +246,11 @@ GetStatusInfo(struct upnphttp * h, const char * action)
+@@ -220,8 +247,11 @@ GetStatusInfo(struct upnphttp * h, const char * action)
  	/* ConnectionStatus possible values :
  	 * Unconfigured, Connecting, Connected, PendingDisconnect,
  	 * Disconnecting, Disconnected */
@@ -868,7 +904,7 @@ index dd5e069..6255bc3
  	uptime = (time(NULL) - startup_time);
  	bodylen = snprintf(body, sizeof(body), resp,
  		action, SERVICE_TYPE_WANIPC,
-@@ -270,10 +299,16 @@ GetExternalIPAddress(struct upnphttp * h, const char * action)
+@@ -270,10 +300,16 @@ GetExternalIPAddress(struct upnphttp * h, const char * action)
  	{
  		strncpy(ext_ip_addr, use_ext_ip_addr, INET_ADDRSTRLEN);
  	}
@@ -885,7 +921,7 @@ index dd5e069..6255bc3
  		strncpy(ext_ip_addr, "0.0.0.0", INET_ADDRSTRLEN);
  	}
  #else
-@@ -418,7 +453,11 @@ AddPortMapping(struct upnphttp * h, const char * action)
+@@ -418,7 +454,11 @@ AddPortMapping(struct upnphttp * h, const char * action)
  	PortMappingDescription, PortMappingEnabled and PortMappingLeaseDuration are
  	overwritten.
  	*/
@@ -898,7 +934,7 @@ index dd5e069..6255bc3
  
  	ClearNameValueList(&data);
  
-@@ -554,7 +593,11 @@ AddAnyPortMapping(struct upnphttp * h, const char * action)
+@@ -554,7 +594,11 @@ AddAnyPortMapping(struct upnphttp * h, const char * action)
  	/* TODO : accept a different external port
  	 * have some smart strategy to choose the port */
  	for(;;) {
@@ -911,7 +947,7 @@ index dd5e069..6255bc3
  		if(r==-2 && eport < 65535) {
  			eport++;
  		} else {
-@@ -775,7 +818,10 @@ DeletePortMappingRange(struct upnphttp * h, const char * action)
+@@ -775,7 +819,10 @@ DeletePortMappingRange(struct upnphttp * h, const char * action)
  	syslog(LOG_INFO, "%s: deleting external ports: %hu-%hu, protocol: %s",
  	       action, startport, endport, protocol);
  
@@ -923,7 +959,7 @@ index dd5e069..6255bc3
  	                                           protocol, &number);
  	if(number == 0)
  	{
-@@ -993,7 +1039,10 @@ http://www.upnp.org/schemas/gw/WANIPConnection-v2.xsd">
+@@ -993,7 +1040,10 @@ http://www.upnp.org/schemas/gw/WANIPConnection-v2.xsd">
  	memcpy(body+bodylen, list_start, sizeof(list_start));
  	bodylen += (sizeof(list_start) - 1);
  
@@ -935,7 +971,7 @@ index dd5e069..6255bc3
  	                                           protocol, &list_size);
  	/* loop through port mappings */
  	for(i = 0; number > 0 && i < list_size; i++)
-@@ -1124,16 +1173,63 @@ SetConnectionType(struct upnphttp * h, const char * action)
+@@ -1124,16 +1174,63 @@ SetConnectionType(struct upnphttp * h, const char * action)
  static void
  RequestConnection(struct upnphttp * h, const char * action)
  {
@@ -999,7 +1035,7 @@ index dd5e069..6255bc3
  }
  
  /*
-@@ -1172,8 +1268,11 @@ QueryStateVariable(struct upnphttp * h, const char * action)
+@@ -1172,8 +1269,11 @@ QueryStateVariable(struct upnphttp * h, const char * action)
  	else if(strcmp(var_name, "ConnectionStatus") == 0)
  	{
  		const char * status;
