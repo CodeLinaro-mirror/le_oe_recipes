@@ -8,7 +8,7 @@ SRC_URI += "file://files/50-log.rules"
 
 DEPENDS = "zlib openssl glib-2.0 libcap"
 
-PR = "r12"
+PR = "r13"
 
 inherit autotools
 
@@ -78,6 +78,10 @@ pkg_postinst () {
         update-rc.d $OPT -f usb remove
         update-rc.d $OPT usb start 37 S .
 }
+
+INITSCRIPT_PACKAGES =+ "${PN}-adbd"
+INITSCRIPT_NAME_${PN}-adbd = "adbd"
+INITSCRIPT_PARAMS_${PN}-adbd = "stop 01 0 1 6 ."
 
 PACKAGES =+ "${PN}-libcutils-dbg ${PN}-libcutils ${PN}-libcutils-dev ${PN}-libcutils-static"
 FILES_${PN}-libcutils-dbg    = "${libdir}/.debug/libcutils.*"
