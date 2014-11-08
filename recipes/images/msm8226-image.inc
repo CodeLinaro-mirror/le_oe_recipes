@@ -95,5 +95,14 @@ do_rootfs_append() {
 		--base ${MACHINE_KERNEL_BASE} \
 		--tags-addr ${MACHINE_KERNEL_TAGS_OFFSET} \
 		--output ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img
+
+        cp ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.nonsecure
+        ${STAGING_BINDIR_NATIVE}/openssl dgst -${TARGET_SHA_TYPE} -binary ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.nonsecure > ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.${TARGET_SHA_TYPE}
+        ${STAGING_BINDIR_NATIVE}/openssl rsautl -sign -in ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.${TARGET_SHA_TYPE} -inkey ${WORKSPACE}/${PRODUCT_PRIVATE_KEY} -out ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.sig
+        dd if=/dev/zero of=${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.sig.padded bs=${MACHINE_FLASH_PAGE_SIZE} count=1
+        dd if=${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.sig of=${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.sig.padded conv=notrunc
+        cat ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.nonsecure ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.sig.padded > ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img
+        rm -rf ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.nonsecure ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.${TARGET_SHA_TYPE} ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.sig ${DEPLOY_DIR_IMAGE}/${PN}-boot-${MACHINE}.img.sig.padded
+
 }
 
