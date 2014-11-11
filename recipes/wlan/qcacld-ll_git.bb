@@ -8,6 +8,9 @@ FILES_${PN} += "${base_libdir}/firmware/wlan/*"
 
 PR = "r3"
 
+# This DEPENDS is to serialize kernel module builds
+DEPENDS_mdm9635 = "rtsp-alg"
+
 SRC_URI = "file://${WORKSPACE}/wlan/qcacld-2.0"
 
 S = "${WORKDIR}/qcacld-2.0"

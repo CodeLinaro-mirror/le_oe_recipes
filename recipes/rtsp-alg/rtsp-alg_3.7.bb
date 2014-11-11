@@ -5,6 +5,9 @@ LIC_FILES_CHKSUM = "file://nf_nat_rtsp.c;beginline=2;endline=30;md5=1d494e4d4253
 
 PR = "r2"
 
+# This DEPENDS is to serialize kernel module builds
+DEPENDS_mdm9635 = "alx"
+
 KERNEL_VERSION = "${@get_kernelversion('${STAGING_KERNEL_DIR}')}"
 
 
