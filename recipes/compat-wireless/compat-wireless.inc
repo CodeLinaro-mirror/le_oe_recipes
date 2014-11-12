@@ -7,6 +7,9 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYRIGHT;md5=d7810fab7487fb0aad327b76f1be7cd7"
 
 DEPENDS = "virtual/kernel"
+
+#This dependency is to serialize kernel module compilation
+DEPENDS = "rtsp-alg"
 RDEPENDS = "wireless-tools"
 
 INC_PR = "r1"
