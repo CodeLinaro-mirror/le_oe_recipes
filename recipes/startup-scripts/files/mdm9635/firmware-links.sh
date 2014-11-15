@@ -39,6 +39,12 @@ then
    chmod 777 /etc/init.d/fw
    swconfig=`cat /etc/init.d/fw`
    fwpath="/firmware/image/${swconfig}"
+   if [ -d $fwpath -a "$(ls $fwpath)" ]
+   then
+      echo "fwpath exists"
+   else
+      fwpath="/firmware/image"
+   fi
 else
    fwpath="/firmware/image"
 fi
