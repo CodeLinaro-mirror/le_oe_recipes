@@ -8,8 +8,9 @@ ${LICENSE};md5=3775480a712fc46a69647678acb234cb"
 SRC_URI = "file://${WORKSPACE}/qcom-opensource/kernel/kernel-tests"
 
 DEPENDS = "virtual/kernel"
+DEPENDS += "qcacld-ll"
 
-PR = "r2"
+PR = "r3"
 
 S = "${WORKDIR}/kernel-tests"
 CFLAGS_pn-${PN} = ""
