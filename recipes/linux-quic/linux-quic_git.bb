@@ -184,8 +184,8 @@ do_deploy () {
         --dt ${STAGING_DIR_TARGET}/boot/masterDTB \
         --ramdisk /dev/null \
         --cmdline "${cmdparams}" \
-        --base ${kernelbase} \
-        --tags-addr 0x07100000 \
+        --base ${MACHINE_KERNEL_BASE} \
+        --tags-addr ${MACHINE_KERNEL_TAGS_OFFSET} \
         --ramdisk_offset 0x0 \
         --output ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img
 }
