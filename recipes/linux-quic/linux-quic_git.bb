@@ -22,7 +22,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 KDIR = "/kernel"
 SRC_DIR = "${WORKSPACE}/kernel"
 PV = "git-${GITSHA}"
-PR = "r7"
+PR = "r8"
 
 PROVIDES += "virtual/kernel"
 DEPENDS = "virtual/${TARGET_PREFIX}gcc dtbtool-native mkbootimg-native  dtbtool-native mkbootimg-native"
@@ -184,8 +184,8 @@ do_deploy () {
         --dt ${STAGING_DIR_TARGET}/boot/masterDTB \
         --ramdisk /dev/null \
         --cmdline "${cmdparams}" \
-        --base ${kernelbase} \
-        --tags-addr 0x07100000 \
+        --base ${MACHINE_KERNEL_BASE} \
+        --tags-addr ${MACHINE_KERNEL_TAGS_OFFSET} \
         --ramdisk_offset 0x0 \
         --output ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img
 }
