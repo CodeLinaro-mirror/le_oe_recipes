@@ -115,7 +115,8 @@ do_install () {
 	install -m 0644 ${O}/arch/${TARGET_ARCH}/boot/${KERNEL_IMAGETYPE} \
 		${D}/boot/${KERNEL_IMAGETYPE}-${KERNEL_VERSION}
 	install -m 0644 ${O}/.config ${D}/boot/config-${KERNEL_VERSION}
-	uses_modules && oe_runmake modules_install O=${O} INSTALL_MOD_PATH=${D}
+	uses_modules && oe_runmake modules_install O=${O} INSTALL_MOD_PATH=${D} \
+        INSTALL_MOD_STRIP=1
 
 	# Files needed for staging
 	install -d ${D}${KDIR}/usr
