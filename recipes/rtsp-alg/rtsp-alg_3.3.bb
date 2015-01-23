@@ -3,7 +3,7 @@ DESCRIPTION = "RSTP ALG"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://nf_nat_rtsp.c;md5=afa391a5db8f879772af6fead894dac1"
 
-PR = "r2"
+PR = "r3"
 
 KERNEL_VERSION = "${@get_kernelversion('${STAGING_KERNEL_DIR}')}"
 
@@ -24,15 +24,6 @@ SRC_URI[sha256sum] = "b3233862364ef6b8430f1ac8edf77f44e1bc26d08869600dfc45777d4c
 
 
 S = "${WORKDIR}/rtsp-linux-3.3"
-
-do_configure() {
-	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS CC LD CPP
-	oe_runmake 'MODPATH="${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/net"' \
-		'KSOURCE="${STAGING_KERNEL_DIR}"' \
-		'KDIR="${STAGING_KERNEL_DIR}"' \
-		'KERNEL_VERSION="${KERNEL_VERSION}"' \
-		'ARCH=${TARGET_ARCH}'
-}
 
 do_compile() {
         unset LDFLAGS
