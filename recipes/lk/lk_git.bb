@@ -19,7 +19,8 @@ LIBGCC_9615-cdp    = "${STAGING_LIBDIR}/${TARGET_SYS}/4.6.3/libgcc.a"
 LIBGCC_mdm9625     = "${STAGING_LIBDIR}/${TARGET_SYS}/4.6.3/libgcc.a"
 LIBGCC_mdm9635     = "${STAGING_LIBDIR}/${TARGET_SYS}/4.6.3/libgcc.a"
 
-MY_TARGET          = "${BASEMACHINE}"
+MY_TARGET          = "${@ 'msm8226' if BASEMACHINE == 'apq8026' else '${BASEMACHINE}'}"
+
 MY_TARGET_9615-cdp = "mdm9615"
 
 BOOTLOADER_NAME = "${@base_contains('DISTRO_FEATURES', 'emmc-boot', 'emmc_appsboot', 'appsboot', d)}"
