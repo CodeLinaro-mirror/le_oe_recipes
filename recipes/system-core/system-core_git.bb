@@ -8,7 +8,7 @@ SRC_URI += "file://files/50-log.rules"
 
 DEPENDS = "zlib openssl glib-2.0 libcap"
 
-PR = "r13"
+PR = "r14"
 
 inherit autotools
 
@@ -68,6 +68,12 @@ do_install_append_msm8610 () {
 }
 
 do_install_append_msm8226 () {
+	install -d ${DEPLOY_DIR}/host/linux/bin
+	install ${D}/usr/bin/adb ${DEPLOY_DIR}/host/linux/bin
+	install ${D}/usr/bin/fastboot ${DEPLOY_DIR}/host/linux/bin
+}
+
+do_install_append_apq8026 () {
 	install -d ${DEPLOY_DIR}/host/linux/bin
 	install ${D}/usr/bin/adb ${DEPLOY_DIR}/host/linux/bin
 	install ${D}/usr/bin/fastboot ${DEPLOY_DIR}/host/linux/bin
