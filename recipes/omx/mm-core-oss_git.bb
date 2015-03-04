@@ -18,6 +18,8 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 #re-use non-perf settings
 BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
 
+BASEMACHINE := "${@ 'msm8226' if BASEMACHINE == 'apq8026' else '${BASEMACHINE}'}"
+
 EXTRA_OECONF += " --with-sanitized-headers=${STAGING_KERNEL_DIR}/usr/include \
                  --enable-target-${BASEMACHINE}=yes"
 

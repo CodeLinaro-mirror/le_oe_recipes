@@ -25,6 +25,8 @@ inherit autotools
 #re-use non-perf settings
 BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
 
+BASEMACHINE := "${@ 'msm8226' if BASEMACHINE == 'apq8026' else '${BASEMACHINE}'}"
+
 EXTRA_OECONF += " --with-libhardware-headers=${WORKSPACE}/hardware/libhardware \
                  --with-sanitized-headers=${STAGING_KERNEL_DIR}/usr/include \
                  --with-common-includes=${STAGING_INCDIR} \
