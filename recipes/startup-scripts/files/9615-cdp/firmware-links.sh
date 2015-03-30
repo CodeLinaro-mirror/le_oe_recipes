@@ -101,6 +101,7 @@ case $linksNeeded in
             echo "No cnss image found"
             ;;
       esac
+          ;;
 
    *)
       echo "Nothing to do. No firmware links needed."
