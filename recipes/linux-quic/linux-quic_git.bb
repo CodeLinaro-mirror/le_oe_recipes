@@ -24,7 +24,7 @@ SRC_DIR = "${WORKSPACE}/kernel"
 PV = "git-${GITSHA}"
 PR = "r7"
 
-PROVIDES += "virtual/kernel"
+#PROVIDES += "virtual/kernel"
 DEPENDS = "virtual/${TARGET_PREFIX}gcc dtbtool-native mkbootimg-native  dtbtool-native mkbootimg-native"
 
 INHIBIT_DEFAULT_DEPS = "1"
