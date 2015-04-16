@@ -1,5 +1,4 @@
-#!/bin/sh
-# Copyright (c) 2014, The Linux Foundation. All rights reserved.
+# Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -25,62 +24,38 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
-# find_partitions        init.d script to dynamically find partitions
-#
 
-FindAndMountUBI () {
-   partition=$1
-   dir=$2
+# filename              partition
 
-   mtd_block_number=`cat $mtd_file | grep -i $partition | sed 's/^mtd//' | awk -F ':' '{print $1}'`
-   echo "MTD : Detected block device : $dir for $partition"
-   mkdir -p $dir
+NON-HLOS.ubi            modem
+NON-HLOS.bin            modem
 
-   ubiattach -m $mtd_block_number -d 1 /dev/ubi_ctrl
-   device=/dev/ubi1_0
-   while [ 1 ]
-    do
-        if [ -c $device ]
-        then
-            mount -t ubifs /dev/ubi1_0 $dir -o bulk_read
-            break
-        else
-            sleep 0.010
-        fi
-    done
-}
+sbl1.mbn                sbl
+tz.mbn                  tz
+rpm.mbn                 rpm
+appsboot.mbn            aboot
 
-FindAndMountVolumeUBI () {
-   volume_name=$1
-   dir=$2
-   mkdir -p $dir
-   mount -t ubifs ubi0:$volume_name $dir -o bulk_read
-}
+# filename + .bak       backup partition
 
-FindAndMountEXT4 () {
-   partition=$1
-   dir=$2
-   mmc_block_device=/dev/block/bootdevice/by-name/$partition
-   echo "EMMC : Detected block device : $dir for $partition"
-   mkdir -p $dir
-   mount -t ext4 $mmc_block_device $dir -o relatime,data=ordered,noauto_da_alloc,discard
-   echo "EMMC : Mounting of $mmc_block_device on $dir done"
-}
+#sbl1.mbn.bak            sbl1bak
+#tz.mbn.bak              tzbak
+#rpm.mbn.bak             rpmbak
+#appsboot.mbn.bak        abootbak
 
-emmc_dir=/dev/block/bootdevice/by-name
-mtd_file=/proc/mtd
+# For multiple file firmware images that differ from *.mbn and *.bin
+# you can specify filename.* to direct all files to the same location.
+# For example for modem.mdt, modem.b00, modem.b01,... modem.bxx files
+# writting 'modem.*   location' will direct all files to 'location'.
+# If still some files need to go to different location give the full
+# file name also, for example 'modem.b01   other_location'
 
-if [ -d $emmc_dir ]
-then
-        fstype="EXT4"
-        eval FindAndMount${fstype} userdata /usr
-        eval FindAndMount${fstype} cache /cache
-else
-        fstype="UBI"
-        eval FindAndMountVolume${fstype} usrfs /usr
-fi
+# filename              location
 
-eval FindAndMount${fstype} modem /firmware
-
-exit 0
+mba.*                   /firmware/image
+modem.*                 /firmware/image
+bdwlan30.bin            /firmware/image
+nvm_tlv_3.0.bin         /firmware/image
+otp30.bin               /firmware/image
+qwlan30.bin             /firmware/image
+rampatch_tlv_3.0.tlv    /firmware/image
+utf30.bin               /firmware/image

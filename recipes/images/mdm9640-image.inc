@@ -2,7 +2,7 @@
 require mdm-bootimg.inc
 
 # The OE-Core minimal boot image files.
-IMAGE_FSTYPES += "ubifs ext4"
+IMAGE_FSTYPES += "ubifs"
 
 IMAGE_INSTALL += "task-core-boot"
 IMAGE_INSTALL += "${ROOTFS_PKGMANAGE_BOOTSTRAP}"
@@ -28,6 +28,8 @@ IMAGE_INSTALL += "data-oss"
 IMAGE_INSTALL += "dhcpcd"
 IMAGE_INSTALL += "dnsmasq"
 IMAGE_INSTALL += "ddclient"
+IMAGE_INSTALL += "e2fsprogs-e2fsck"
+IMAGE_INSTALL += "e2fsprogs-mke2fs"
 IMAGE_INSTALL += "ebtables"
 DEPENDS += "gdb-cross"
 IMAGE_INSTALL += "gdbserver"
@@ -46,6 +48,10 @@ IMAGE_INSTALL += "iw"
 IMAGE_INSTALL += "jquery"
 IMAGE_INSTALL += "jquery-ui"
 IMAGE_INSTALL += "kernel-modules"
+IMAGE_INSTALL += "libcomerr"
+IMAGE_INSTALL += "libss"
+IMAGE_INSTALL += "libe2p"
+IMAGE_INSTALL += "libext2fs"
 IMAGE_INSTALL += "libnl"
 IMAGE_INSTALL += "libavahi-common"
 IMAGE_INSTALL += "libavahi-core"
@@ -84,7 +90,9 @@ IMAGE_INSTALL += "wireless-tools"
 IMAGE_INSTALL += "wpa-supplicant-qcacld"
 IMAGE_PREPROCESS_COMMAND += "echo ${MACHINE} >> ${IMAGE_ROOTFS}/target;"
 
-do_rootfs_append() {
+# Below is to generate sparse ext4 system image (OE by default supports raw ext4 images)
 
-    cp ${DEPLOY_DIR_IMAGE}/${IMAGE_LINK_NAME}.ext4 ${DEPLOY_DIR_IMAGE}/${MACHINE}-sysfs.ext4
+do_makesystem() {
+
+    make_ext4fs -s -l ${SYSTEM_SIZE_EXT4} ${DEPLOY_DIR_IMAGE}/${MACHINE}-sysfs.ext4 ${IMAGE_ROOTFS}
 }

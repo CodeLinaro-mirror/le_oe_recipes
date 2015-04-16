@@ -4,7 +4,11 @@ require mdm-recovery-bootimg.inc
 DEPENDS += "bzip2 fsconfig-native"
 
 # Image output types
-IMAGE_FSTYPES += "yaffs2"
+IMAGE_FSTYPES += "ubi"
+
+MKUBIFS_ARGS = "-m 4096 -e 253952 -c 83 -F"
+
+UBI_VOLNAME = "rootfs"
 
 # The OE-Core minimal boot image files.
 IMAGE_INSTALL += "task-core-boot"
@@ -23,3 +27,16 @@ IMAGE_INSTALL += "powerapp-reboot"
 IMAGE_INSTALL += "powerapp-shutdown"
 IMAGE_INSTALL += "start-scripts-find-recovery-partitions"
 IMAGE_INSTALL += "start-scripts-firmware-links"
+IMAGE_INSTALL += "mtd-utils-ubifs"
+IMAGE_INSTALL += "e2fsprogs-e2fsck"
+IMAGE_INSTALL += "e2fsprogs-mke2fs"
+IMAGE_INSTALL += "libcomerr"
+IMAGE_INSTALL += "libss"
+IMAGE_INSTALL += "libe2p"
+IMAGE_INSTALL += "libext2fs"
+
+# Below is to generate sparse ext4 recovery image (OE by default supports raw ext4 images)
+
+do_makesystem() {
+	make_ext4fs -s -l ${SYSTEM_SIZE_EXT4} ${DEPLOY_DIR_IMAGE}/mdm-recovery-image-${MACHINE}.ext4 ${IMAGE_ROOTFS}
+}
