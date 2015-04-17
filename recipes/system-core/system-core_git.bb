@@ -47,7 +47,7 @@ do_install_append() {
    install -d ${D}${bindir}/usb/debuger/
    install -m 0755 ${S}/usb/debuger/debugFiles -D ${D}${bindir}/usb/debuger/
    install -m 0755 ${S}/usb/debuger/help -D ${D}${bindir}/usb/debuger/
-   ln -s /usr/bin/usb/compositions/9025 ${D}${bindir}/usb/boot_hsusb_composition
+   ln -s /usr/bin/usb/compositions/901D ${D}${bindir}/usb/boot_hsusb_composition
    ln -s /usr/bin/usb/compositions/empty ${D}${bindir}/usb/boot_hsic_composition
 }
 
