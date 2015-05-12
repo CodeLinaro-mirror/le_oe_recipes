@@ -1,0 +1,55 @@
+diff -rupN util.org/String8.cpp util/String8.cpp
+--- util.org/String8.cpp	2014-01-08 15:35:56.909868383 -0800
++++ util/String8.cpp	2014-01-08 15:39:09.413248285 -0800
+@@ -61,6 +80,7 @@ static const char32_t kFirstByteMark[] =
+     0x00000000, 0x00000000, 0x000000C0, 0x000000E0, 0x000000F0
+ };
+
++#define OS_PATH_SEPARATOR '/'
+ // Separator used by resource paths. This is not platform dependent contrary
+ // to OS_PATH_SEPARATOR.
+ #define RES_PATH_SEPARATOR '/'
+@@ -122,12 +142,27 @@ static void utf32_to_utf8(uint8_t* dstP,
+
+ // ---------------------------------------------------------------------------
+
++//dummy class to initialize string class
++class LibUtilsFirstStatics
++{
++public:
++    LibUtilsFirstStatics()
++    {
++        initialize_string8();
++        initialize_string16();
++    }
++
++    ~LibUtilsFirstStatics()
++    {
++        terminate_string16();
++        terminate_string8();
++    }
++};
++static LibUtilsFirstStatics gFirstStatics;
++
+ static SharedBuffer* gEmptyStringBuf = NULL;
+ static char* gEmptyString = NULL;
+
+-extern int gDarwinCantLoadAllObjects;
+-int gDarwinIsReallyAnnoying;
+-
+ static inline char* getEmptyString()
+ {
+     gEmptyStringBuf->acquire();
+@@ -136,12 +171,6 @@ static inline char* getEmptyString()
+
+ void initialize_string8()
+ {
+-    // HACK: This dummy dependency forces linking libutils Static.cpp,
+-    // which is needed to initialize String8/String16 classes.
+-    // These variables are named for Darwin, but are needed elsewhere too,
+-    // including static linking on any platform.
+-    gDarwinIsReallyAnnoying = gDarwinCantLoadAllObjects;
+-
+     SharedBuffer* buf = SharedBuffer::alloc(1);
+     char* str = (char*)buf->data();
+     *str = 0;

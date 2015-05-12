@@ -8,7 +8,7 @@ PR = "r8"
 SRC_URI = "file://${WORKSPACE}/camera-hal \
            file://camera_parameters_header_include_patch.txt \
            file://dlog-replace-utils-patch.txt \
- "
+	       file://string_fix_patch.txt"
 
 S = "${WORKDIR}/camera-hal"
 
@@ -36,7 +36,7 @@ CFLAGS += "-I${STAGING_INCDIR}/cameracommon"
 CFLAGS += "-I${STAGING_KERNEL_DIR}/usr/include"
 CFLAGS += "-I${STAGING_KERNEL_DIR}/usr/include/media"
 
-EXTRA_OECONF_append = " --enable-debug=no  --with-dlog"
+EXTRA_OECONF_append = " --enable-debug=no --with-dlog"
 
 EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm7627a', ' --enable-target=msm7627a', '', d)}"
 EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8960', ' --enable-target=msm8960', '', d)}"
@@ -73,9 +73,41 @@ do_configure_prepend() {
 
     wget --no-check-certificate -O ${S}/QCamera2/HAL/Mutex.h https://www.codeaurora.org/cgit/quic/la/platform/frameworks/native/plain/include/utils/Mutex.h?h=jb_3.2_rb5.39
 
+    mkdir -p ${S}/QCamera2/HAL/utils/
+    mkdir -p ${S}/QCamera2/HAL/private/utils/
+
+    wget --no-check-certificate -O ${S}/QCamera2/HAL/utils/Vector.h https://www.codeaurora.org/cgit/quic/la/platform/frameworks/base/plain/include/utils/Vector.h?h=LNX.LB.0.9
+
+    mkdir -p ${S}/QCamera2/util/
+
+    wget --no-check-certificate -O ${S}/QCamera2/util/RefBase.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/base/plain/libs/utils/RefBase.cpp?h=LNX.LB.0.9
+
+    wget --no-check-certificate -O ${S}/QCamera2/util/SharedBuffer.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/base/plain/libs/utils/SharedBuffer.cpp?h=LNX.LB.0.9
+
+    wget --no-check-certificate -O ${S}/QCamera2/util/StopWatch.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/base/plain/libs/utils/StopWatch.cpp?h=LNX.LB.0.9
+
+    wget --no-check-certificate -O ${S}/QCamera2/util/String8.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/base/plain/libs/utils/String8.cpp?h=LNX.LB.0.9
+
+    wget --no-check-certificate -O ${S}/QCamera2/util/String16.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/base/plain/libs/utils/String16.cpp?h=LNX.LB.0.9
+
+    wget --no-check-certificate -O ${S}/QCamera2/util/StringArray.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/base/plain/libs/utils/StringArray.cpp?h=LNX.LB.0.9
+
+    wget --no-check-certificate -O ${S}/QCamera2/util/SystemClock.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/base/plain/libs/utils/SystemClock.cpp?h=LNX.LB.0.9
+
+    wget --no-check-certificate -O ${S}/QCamera2/util/Timers.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/base/plain/libs/utils/Timers.cpp?h=LNX.LB.0.9
+
+    wget --no-check-certificate -O ${S}/QCamera2/util/VectorImpl.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/base/plain/libs/utils/VectorImpl.cpp?h=LNX.LB.0.9
+
+    wget --no-check-certificate -O ${S}/QCamera2/util/misc.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/base/plain/libs/utils/misc.cpp?h=LNX.LB.0.9
+
     # Apply patch for newly imported cameraparameters.cpp file
     pushd ${S}/..
     patch -p0 < camera_parameters_header_include_patch.txt
+    popd
+
+    # Apply patch to string class
+    pushd ${S}/QCamera2/
+    patch -p0 < ../../string_fix_patch.txt
     popd
 
     # copy additional system header files
@@ -87,12 +119,8 @@ do_configure_prepend() {
     wget --no-check-certificate -O ${STAGING_INCDIR}/sync/sync.h https://www.codeaurora.org/cgit/external/gigabyte/platform/system/core/plain/include/sync/sync.h?h=caf/jb_3.2_rb5.39
 
     # patch utils lib to replace log with dlog
-    cp ${S}/../dlog-replace-utils-patch.txt ${WORKSPACE}/base/
-    pushd ${WORKSPACE}/base
-
-    git reset --hard
-    git apply dlog-replace-utils-patch.txt
-
+    pushd ${S}/..
+    patch -p0 < dlog-replace-utils-patch.txt
     popd
 
 }
