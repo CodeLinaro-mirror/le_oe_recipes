@@ -33,6 +33,9 @@
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 export PATH
 
+#The below line added to release gpio21 after the system boot by wlan
+echo wlan-qcacld-platform > /sys/bus/platform/drivers/wlan-qcacld-platform/unbind
+
 # Check for images and set up symlinks
 if [ -f /etc/init.d/fw ]
 then
