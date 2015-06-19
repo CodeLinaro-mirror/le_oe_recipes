@@ -1,4 +1,4 @@
-inherit autotools update-rc.d
+inherit autotools-brokensep pkgconfig update-rc.d
 
 DESCRIPTION = "Android system/core components"
 HOMEPAGE = "http://developer.android.com/"
@@ -11,7 +11,7 @@ SRC_URI   = "file://system/core/"
 SRC_URI  += "file://50-log.rules"
 
 S = "${WORKDIR}/system/core"
-PR = "r15"
+PR = "r16"
 
 INSANE_SKIP_${PN}-libcutils-static = "staticdev"
 INSANE_SKIP_${PN}-liblog-static = "staticdev"
@@ -22,7 +22,7 @@ EXTRA_OECONF_append_msm8960 = " --with-host-os=${HOST_OS}"
 EXTRA_OECONF_append_msm8974 = " --with-host-os=${HOST_OS}"
 EXTRA_OECONF_append_msm8610 = " --with-host-os=${HOST_OS}"
 EXTRA_OECONF_append_msm8226 = " --with-host-os=${HOST_OS}"
-EXTRA_OECONF_append += "--with-sanitized-headers=${STAGING_KERNEL_DIR}/usr/include"
+EXTRA_OECONF_append += "--with-sanitized-headers=${STAGING_KERNEL_BUILDDIR}/usr/include"
 
 do_install_append() {
    install -m 0755 -d ${D}${includedir}/cutils
@@ -100,4 +100,5 @@ FILES_${PN}-liblog-static = "${libdir}/liblog.a"
 
 PACKAGES =+ "${PN}-init-qcom-post"
 FILES_${PN}-init-qcom-post = " ${sysconfdir}/init.d/init_qcom_post"
+INSANE_SKIP_${PN}-init-qcom-post = "file-rdeps"
 

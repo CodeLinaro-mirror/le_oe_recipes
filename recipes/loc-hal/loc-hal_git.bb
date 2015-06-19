@@ -1,4 +1,5 @@
-inherit autotools qcommon
+
+inherit autotools-brokensep pkgconfig
 
 DESCRIPTION = "GPS Loc HAL"
 PR = "r5"
@@ -6,7 +7,8 @@ LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/\
 ${LICENSE};md5=3775480a712fc46a69647678acb234cb"
 
-SRC_DIR = "${WORKSPACE}/hardware/qcom/gps/"
+FILESPATH =+ "${WORKSPACE}:"
+SRC_URI = "file://hardware/qcom/gps/"
 S = "${WORKDIR}/hardware/qcom/gps"
 DEPENDS = "glib-2.0 libhardware qmi qmi-framework data loc-pla"
 EXTRA_OECONF = "--with-libhardware-includes=${STAGING_INCDIR} \

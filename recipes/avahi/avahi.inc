@@ -44,6 +44,7 @@ EXTRA_OECONF = "--with-distro=debian \
              --disable-qt4 \
              --disable-python \
              --disable-doxygen-doc \
+	     --disable-manpages \
              --with-systemdsystemunitdir=${base_libdir}/systemd/system/ \
              ${AVAHI_GTK} \
            "
@@ -54,7 +55,7 @@ LDFLAGS_append_libc-uclibc = " -lintl"
 LDFLAGS_append_uclinux-uclibc = " -lintl"
 
 do_configure_prepend() {
-    sed 's:AM_CHECK_PYMOD:echo "no pymod" #AM_CHECK_PYMOD:g' -i configure.ac
+	sed 's:AM_CHECK_PYMOD:echo "no pymod" #AM_CHECK_PYMOD:g' -i ${WORKDIR}/avahi-${PV}/configure.ac
 }
 
 
