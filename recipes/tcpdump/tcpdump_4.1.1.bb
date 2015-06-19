@@ -24,6 +24,10 @@ EXTRA_OECONF = "--without-crypto \
 
 
 
+do_configure_prepend () {
+        #Allow build paths with containing AU.
+        sed 's|AC_CANONICAL_HOST|m4_pattern_allow([^AU_])\nAC_CANONICAL_HOST|' -i ${S}/configure.in
+}
 do_configure() {
 	sed -i 's:-L/lib:-L${STAGING_LIBDIR}:g' ./configure.in
 	gnu-configize
