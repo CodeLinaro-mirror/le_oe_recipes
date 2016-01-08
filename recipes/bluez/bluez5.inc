@@ -26,4 +26,5 @@ EXTRA_OECONF = "\
   --enable-datafiles \
   --disable-systemd \
   --with-sanitized-headers=${STAGING_KERNEL_HEADERS} \
+  --with-glib \
 "
