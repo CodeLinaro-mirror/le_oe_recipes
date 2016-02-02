@@ -1,0 +1,18 @@
+--- a/CHANGES	2016-02-01 15:51:39.569154143 -0800
++++ b/CHANGES	2016-02-01 15:54:38.519459603 -0800
+@@ -4,6 +4,15 @@
+ 
+  Changes between 1.0.1d and 1.0.1e [11 Feb 2013]
+ 
++   *) A missing bounds check in the handling of the TLS heartbeat extension
++      can be used to reveal up to 64k of memory to a connected client or
++      server.
++ 
++      Thanks for Neel Mehta of Google Security for discovering this bug and to
++      Adam Langley <agl@chromium.org> and Bodo Moeller <bmoeller@acm.org> for
++      preparing the fix (CVE-2014-0160)
++      [Adam Langley, Bodo Moeller]
++
+   *)
+ 
+  Changes between 1.0.1c and 1.0.1d [5 Feb 2013]
