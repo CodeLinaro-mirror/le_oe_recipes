@@ -38,6 +38,7 @@ EXTRA_OEMAKE_append_msm8960  = " EMMC_BOOT=1 SIGNED_KERNEL=1"
 EXTRA_OEMAKE_append_msm8974  = " EMMC_BOOT=1 SIGNED_KERNEL=1"
 EXTRA_OEMAKE_append_msm8610  = " EMMC_BOOT=1 SIGNED_KERNEL=1"
 EXTRA_OEMAKE_append_msm8226  = " EMMC_BOOT=1 SIGNED_KERNEL=1"
+EXTRA_OEMAKE_append_mdm9640  = " SIGNED_KERNEL=1"
 
 do_install() {
         install -d ${D}/boot
