@@ -29,13 +29,19 @@
 # find_partitions        init.d script to dynamically find partitions
 #
 
+DUMP_TO_KMSG=/dev/kmsg
+
 FindAndMountEXT4 () {
    partition=$1
    dir=$2
    mmc_block_device=/dev/block/bootdevice/by-name/$partition
+   echo "EMMC : Detected block device : $dir for $partition" > $DUMP_TO_KMSG
    mkdir -p $dir
    mount -t ext4 $mmc_block_device $dir -o relatime,data=ordered,noauto_da_alloc,discard
+   echo "EMMC : Mounting of $mmc_block_device on $dir done"  > $DUMP_TO_KMSG
 }
 
 FindAndMountEXT4 userdata /usr
+FindAndMountEXT4 persist /persist
+
 exit 0

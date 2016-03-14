@@ -18,7 +18,7 @@ do_install() {
     install "${WORKDIR}"/set_wcnss_mode ${D}/etc/init.d
 
     mkdir -p ${D}/lib/firmware/wlan/prima
-    cp -pPr ${S}/* ${D}/lib/firmware/wlan/prima
+    cp -pP ${S}/WCNSS_cfg.dat ${S}/WCNSS_qcom_cfg.ini ${D}/lib/firmware/wlan/prima
 }
 
 INITSCRIPT_NAME = "set_wcnss_mode"

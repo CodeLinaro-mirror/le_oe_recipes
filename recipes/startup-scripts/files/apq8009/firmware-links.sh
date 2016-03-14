@@ -134,4 +134,9 @@ case $linksNeeded in
 esac
 
 cd /
+
+# The below change is only applicable to APQ 8009 LE.
+# Create a Symbolic Link for WCNSS_qcom_wlan_nv.bin which is stored at /persist partition.
+ln -s /persist/WCNSS_qcom_wlan_nv.bin /lib/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin
+
 exit 0
