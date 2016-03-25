@@ -1,10 +1,26 @@
-SUMMARY = "A small image just capable of allowing a device to boot."
+DESCRIPTION = "AGL Demo Platform image currently contains a simple HMI and \
+demos."
 
-inherit core-image
+require recipes-platform/images/agl-demo-platform.bb
 
-IMAGE_INSTALL = "packagegroup-core-boot ${ROOTFS_PKGMANAGE_BOOTSTRAP} ${CORE_IMAGE_EXTRA_INSTALL}"
+#add packages on top of AGL master
+IMAGE_INSTALL_append = " \
+    mesa-megadriver \
+    weston \
+    weston-examples \
+    qtbase-examples \
+    qtwebkit \
+    qtwebkit-examples-examples \
+    \
+    qtmultimedia \
+    qtmultimedia-plugins \
+    qtmultimedia-qmlplugins \
+"
 
-IMAGE_LINGUAS = " "
+IMAGE_INSTALL += " \
+    packagegroup-multimedia \
+"
 
-IMAGE_ROOTFS_SIZE ?= "8192"
+IMAGE_ROOTFS_SIZE = "1048576"
+
 IMAGE_ROOTFS_EXTRA_SPACE_append = "${@bb.utils.contains("DISTRO_FEATURES", "systemd", " + 4096", "" ,d)}"
