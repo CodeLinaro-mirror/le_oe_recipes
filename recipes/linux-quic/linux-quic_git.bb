@@ -3,24 +3,16 @@ inherit linux-kernel-base localgit
 DESCRIPTION = "QuIC Linux Kernel"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
-COMPATIBLE_MACHINE = "(9615-cdp|mdm9625|mdm9625-perf|mdm9635|mdm9635-perf|mdm9640|mdmferrum)"
+COMPATIBLE_MACHINE = "mdm9640"
 BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
 
 # Moved to here from the distro.conf file because it really kind of belongs
 # here and we're moving more to being a BSP with the MSM linux distro...
 KERNEL_IMAGETYPE = "zImage"
-KERNEL_IMAGETYPE_9615-cdp = "Image"
 
 # Provide a config baseline for things so the kernel will build...
-KERNEL_DEFCONFIG_9615-cdp      = "msm9615_defconfig"
-KERNEL_DEFCONFIG_mdm9625       = "msm9625_defconfig"
-KERNEL_DEFCONFIG_mdm9625-perf  = "msm9625-perf_defconfig"
-KERNEL_DEFCONFIG_mdm9635       = "mdm9630_defconfig"
-KERNEL_DEFCONFIG_mdm9635-perf  = "mdm9630-perf_defconfig"
-KERNEL_DEFCONFIG_mdm9640       = "mdm9640_defconfig"
-KERNEL_DEFCONFIG_mdm9640-perf  = "mdm9640-perf_defconfig"
-KERNEL_DEFCONFIG_mdmferrum     = "mdmferrum_defconfig"
-KERNEL_DEFCONFIG              ?= "msm9625_defconfig"
+KERNEL_DEFCONFIG_mdm9640       = "mdm_defconfig"
+KERNEL_DEFCONFIG_mdm9640-perf  = "mdm-perf_defconfig"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 KDIR = "/usr/src/kernel"
@@ -191,15 +183,15 @@ do_deploy () {
 # Make bootimage
     ver=`sed -r 's/#define UTS_RELEASE "(.*)"/\1/' ${STAGING_KERNEL_DIR}/include/generated/utsrelease.h`
 
-    dtb_files=`find ${STAGING_KERNEL_DIR}/arch/arm/boot/dts -iname *${MACHINE_DTS_NAME}*.dtb | awk -F/ '{print $NF}' | awk -F[.][d] '{print $1}'`
+    dtb_files=`find ${STAGING_KERNEL_DIR}/arch/arm/boot/dts/qcom -iname *${MACHINE_DTS_NAME}*.dtb | awk -F/ '{print $NF}' | awk -F[.][d] '{print $1}'`
 
     # Create separate images with dtb appended to zImage for all targets.
     for d in ${dtb_files}; do
        targets=`echo ${d#${MACHINE_DTS_NAME}-}`
-       cat ${STAGING_DIR_TARGET}/boot/zImage-${ver} ${STAGING_KERNEL_DIR}/arch/arm/boot/dts/${d}.dtb > ${STAGING_KERNEL_DIR}/arch/arm/boot/dts/dtb-zImage-${ver}-${targets}
+       cat ${STAGING_DIR_TARGET}/boot/zImage-${ver} ${STAGING_KERNEL_DIR}/arch/arm/boot/dts/qcom/${d}.dtb > ${STAGING_KERNEL_DIR}/arch/arm/boot/dts/qcom/dtb-zImage-${ver}-${targets}
     done
 
-    ${STAGING_BINDIR_NATIVE}/dtbtool ${STAGING_KERNEL_DIR}/arch/arm/boot/dts/ -s ${PAGE_SIZE} -o ${STAGING_DIR_TARGET}/boot/masterDTB -p ${STAGING_KERNEL_DIR}/scripts/dtc/ -v
+    ${STAGING_BINDIR_NATIVE}/dtbtool ${STAGING_KERNEL_DIR}/arch/arm/boot/dts/qcom/ -s ${PAGE_SIZE} -o ${STAGING_DIR_TARGET}/boot/masterDTB -p ${STAGING_KERNEL_DIR}/scripts/dtc/ -v
 
     mkdir -p ${DEPLOY_DIR_IMAGE}
     machine=`echo ${MACHINE}`
