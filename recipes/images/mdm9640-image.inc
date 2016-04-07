@@ -91,6 +91,7 @@ IMAGE_INSTALL += "wireless-tools"
 #IMAGE_INSTALL += "wlan"
 IMAGE_INSTALL += "wpa-supplicant-qcacld"
 IMAGE_INSTALL += "tinyproxy"
+IMAGE_INSTALL += "ethernet-neutrino"
 IMAGE_PREPROCESS_COMMAND += "echo ${MACHINE} >> ${IMAGE_ROOTFS}/target;"
 
 # Below is to generate sparse ext4 system image (OE by default supports raw ext4 images)
