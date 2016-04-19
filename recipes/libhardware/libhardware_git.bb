@@ -9,6 +9,7 @@ ${LICENSE};md5=89aea4e17d99a7cacdbeed46a0096b10"
 FILESPATH =+ "${WORKSPACE}:"
 SRC_URI   = "file://hardware/libhardware/"
 SRC_URI  += "file://autotools.patch"
+SRC_URI  += "file://autotools2.patch"
 S = "${WORKDIR}/hardware/${PN}"
 
 PR = "r5"
