@@ -21,6 +21,7 @@ KERNEL_DEFCONFIG_mdmcalifornium-perf     = "mdm-perf_defconfig"
 KERNEL_DEFCONFIG_apq8009  = "msm8909_defconfig"
 KERNEL_DEFCONFIG_mdm9607  = "mdm9607_defconfig"
 KERNEL_DEFCONFIG_mdm9607-perf  = "mdm9607-perf_defconfig"
+KERNEL_DEFCONFIG_mdm9607-psm  = "mdm9607-128mb-perf_defconfig"
 KERNEL_PRIORITY           = "9001"
 # Add V=1 to KERNEL_EXTRA_ARGS for verbose
 KERNEL_EXTRA_ARGS        += "O=${B}"
