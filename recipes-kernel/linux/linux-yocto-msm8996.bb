@@ -27,7 +27,8 @@
 #            SRC_URI += "file://feature.scc"
 #
 
-inherit kernel externalsrc
+inherit kernel
+require recipes-kernel/linux/linux-yocto.inc
 
 DESCRIPTION = "Linux kernel"
 SECTION     = "kernel"
@@ -36,35 +37,36 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 
 DEPENDS += "mkbootimg-native"
 
-DEPENDS += "xz-native bc-native"
-DEPENDS_append_aarch64 = " libgcc"
-KERNEL_CC_append_aarch64 = " ${TOOLCHAIN_OPTIONS}"
-KERNEL_LD_append_aarch64 = " ${TOOLCHAIN_OPTIONS}"
+FILESEXTRAPATHS_prepend := "${WORKSPACE}/:"
+SRC_URI   =  "file://kernel"
 
-DEPENDS_append_nios2 = " libgcc"
-KERNEL_CC_append_nios2 = " ${TOOLCHAIN_OPTIONS}"
-KERNEL_LD_append_nios2 = " ${TOOLCHAIN_OPTIONS}"
+KBUILD_DEFCONFIG = "msm-auto_defconfig"
 
-EXTERNALSRC="${WORKSPACE}/kernel"
-
-KERNEL_DEFCONFIG = "msm-auto_defconfig"
-SRC_URI += "file://msm.cfg"
+SRC_URI += " \
+    file://msm.cfg \
+    file://weston_colorforamt.patch"
+ 
 
 LINUX_VERSION ?= "3.18"
 LINUX_VERSION_EXTENSION ?= "8996"
 
+S =  "${WORKDIR}/kernel"
 
 PV = "${LINUX_VERSION}"
 PR = "r1"
 
-KERNEL_EXTRA_ARGS        += "O=${B}"
-
-do_configure () {
-oe_runmake_call -C ${S} ARCH=${ARCH} ${KERNEL_EXTRA_ARGS} ${KERNEL_DEFCONFIG}
-}
+KCONFIG_MODE="--alldefconfig"
 
 do_deploy_append() {
    rm -f  "${DEPLOYDIR}/boot.img" "{DEPLOYDIR}/initrd"
    touch "${DEPLOYDIR}/initrd"
    mkbootimg --kernel "${DEPLOYDIR}/${KERNEL_IMAGETYPE}" --ramdisk "${DEPLOYDIR}/initrd"  -o "${DEPLOYDIR}/boot.img" --cmdline "${KERNEL_CMDLINE}" --base "${KERNEL_BASE}"
 }
+
+do_removegit () {
+   rm -rf "${S}/.git"
+   rm -rf "${S}/.meta"
+   rm -rf "${S}/.metadir"
+}
+
+addtask do_removegit after do_unpack before do_kernel_checkout
