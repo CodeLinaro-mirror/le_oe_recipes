@@ -19,6 +19,8 @@ IMAGE_INSTALL_append = " \
 
 IMAGE_INSTALL += " \
     packagegroup-multimedia \
+    lib32-lk \
+    lib32-gensecimage \
 "
 
 IMAGE_ROOTFS_SIZE = "1048576"
