@@ -1,5 +1,5 @@
 # List of FOSS packages installed onto the root file system as specified by the user.
-require ${MACHINE}-image.inc
+require ${MACHINE}-${WLANMOD}image.inc
 
 IMAGE_LINGUAS = ""
 
