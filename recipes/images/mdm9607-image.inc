@@ -93,6 +93,7 @@ IMAGE_INSTALL += "wireless-tools"
 #IMAGE_INSTALL += "wlan"
 IMAGE_INSTALL += "sfe"
 IMAGE_INSTALL += "tinyproxy"
+IMAGE_INSTALL += "iputils"
 
 # Below packages are open source packages that depend on proprietary packages
 
