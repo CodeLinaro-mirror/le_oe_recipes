@@ -11,8 +11,8 @@ BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
 KERNEL_IMAGETYPE = "zImage"
 
 # Provide a config baseline for things so the kernel will build...
-KERNEL_DEFCONFIG_mdm9640       = "mdm_defconfig"
-KERNEL_DEFCONFIG_mdm9640-perf  = "mdm-perf_defconfig"
+KERNEL_DEFCONFIG_mdm9640       = "mdm9640_defconfig"
+KERNEL_DEFCONFIG_mdm9640-perf  = "mdm9640-perf_defconfig"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 KDIR = "/usr/src/kernel"
