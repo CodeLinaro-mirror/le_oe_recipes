@@ -6,23 +6,13 @@ PV = "1.0.0"
 PR = "r8"
 
 FILESPATH =+ "${WORKSPACE}:"
-SRC_URI = "file://camera-hal \
-           file://camera_parameters_header_include_patch.txt \
-           file://dlog-replace-utils-patch.txt \
- "
-
-S = "${WORKDIR}/camera-hal"
+SRC_URI = "file://${WORKSPACE}/hardware/qcom/camera/QCamera2/stack"
+S = "${WORKSPACE}/hardware/qcom/camera/QCamera2/stack"
 
 inherit autotools
 
 # Need the kernel headers
-DEPENDS += "virtual/kernel"
-DEPENDS += "mm-camera"
-DEPENDS += "mm-still"
-DEPENDS += "utils-lib"
-DEPENDS += "mm-image-codec"
-DEPENDS += "dlog"
-DEPENDS += "lua"
+#DEPENDS += "virtual/kernel"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
@@ -44,12 +34,9 @@ EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8960', ' --enable-
 EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8974', ' --enable-target=msm8974', '', d)}"
 EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8610', ' --enable-target=msm8610', '', d)}"
 EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'msm8226', ' --enable-target=msm8226', '', d)}"
-EXTRA_OECONF_append = " --with-additional-include-directives="${WORKSPACE}/mm-video-oss/mm-core/inc/ -I${WORKSPACE}/hardware/libhardware/include -I${WORKSPACE}/base/include -I${WORKSPACE}/system/core/include -I${WORKSPACE}/mm-video-oss/libstagefrighthw""
+EXTRA_OECONF_append = "${@base_conditional('BASEMACHINE', 'apq8009', ' --enable-target=apq8009', '', d)}"
 
 EXTRA_OECONF_append = " --with-sanitized-headers=${STAGING_KERNEL_BUILDDIR}/usr/include"
-EXTRA_OECONF_append_msm8960 = " --with-additional-include-directives="-I${WORKSPACE}/mm-video-oss/mm-core/inc/ -I${WORKSPACE}/mm-still/omx/inc/""
-EXTRA_OECONF_append_msm8974 = " --with-additional-include-directives="${WORKSPACE}/mm-video-oss/mm-core/inc/ ""
-EXTRA_OECONF_append_msm8610 = " --with-additional-include-directives="${WORKSPACE}/mm-video-oss/mm-core/inc/ -I${WORKSPACE}/hardware/libhardware/include -I${WORKSPACE}/base/include -I${WORKSPACE}/system/core/include -I${WORKSPACE}/mm-video-oss/libstagefrighthw""
 
 #TODO: append msm name.
 CPPFLAGS += "-I${STAGING_INCDIR}/c++"
@@ -64,55 +51,47 @@ FILES_${PN}_append_msm8226 += "/usr/lib/*"
 INSANE_SKIP_${PN} = "dev-so"
 
 
-do_configure_prepend() {
+do_configure_prepend_tmp() {
 
     mkdir -p ${STAGING_INCDIR}/camera/
 
-    wget --no-check-certificate -O ${S}/QCamera2/HAL/CameraParameters.h https://www.codeaurora.org/cgit/quic/la/platform/frameworks/av/plain/include/camera/CameraParameters.h?h=jb_3.2_rb5.39
-
-    wget --no-check-certificate -O ${S}/QCamera2/HAL/CameraParameters.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/av/plain/camera/CameraParameters.cpp?h=jb_3.2_rb5.39
-
-    wget --no-check-certificate -O ${S}/QCamera2/HAL/Mutex.h https://www.codeaurora.org/cgit/quic/la/platform/frameworks/native/plain/include/utils/Mutex.h?h=jb_3.2_rb5.39
+#    wget --no-check-certificate -O ${S}/QCamera2/HAL/CameraParameters.h https://www.codeaurora.org/cgit/quic/la/platform/frameworks/av/plain/include/camera/CameraParameters.h?h=jb_3.2_rb5.39
+#
+#    wget --no-check-certificate -O ${S}/QCamera2/HAL/CameraParameters.cpp https://www.codeaurora.org/cgit/quic/la/platform/frameworks/av/plain/camera/CameraParameters.cpp?h=jb_3.2_rb5.39
+#
+#    wget --no-check-certificate -O ${S}/QCamera2/HAL/Mutex.h https://www.codeaurora.org/cgit/quic/la/platform/frameworks/native/plain/include/utils/Mutex.h?h=jb_3.2_rb5.39
 
     # Apply patch for newly imported cameraparameters.cpp file
-    pushd ${S}/..
-    patch -p0 < camera_parameters_header_include_patch.txt
-    popd
+     pushd ${S}/..
+#    patch -p0 < camera_parameters_header_include_patch.txt
+#    popd
 
     # copy additional system header files
     mkdir -p ${STAGING_INCDIR}/system
-    wget --no-check-certificate -O ${STAGING_INCDIR}/system/camera.h https://www.codeaurora.org/cgit/external/gigabyte/platform/system/core/plain/include/system/camera.h?h=caf/jb_3.2_rb5.39
-    wget --no-check-certificate -O ${STAGING_INCDIR}/system/window.h https://www.codeaurora.org/cgit/external/gigabyte/platform/system/core/plain/include/system/window.h?h=caf/jb_3.2_rb5.39
-    wget --no-check-certificate -O ${STAGING_INCDIR}/system/graphics.h https://www.codeaurora.org/cgit/external/gigabyte/platform/system/core/plain/include/system/graphics.h?h=caf/jb_3.2_rb5.39
-    mkdir -p ${STAGING_INCDIR}/sync
-    wget --no-check-certificate -O ${STAGING_INCDIR}/sync/sync.h https://www.codeaurora.org/cgit/external/gigabyte/platform/system/core/plain/include/sync/sync.h?h=caf/jb_3.2_rb5.39
+#    wget --no-check-certificate -O ${STAGING_INCDIR}/system/camera.h https://www.codeaurora.org/cgit/external/gigabyte/platform/system/core/plain/include/system/camera.h?h=caf/jb_3.2_rb5.39
+#    wget --no-check-certificate -O ${STAGING_INCDIR}/system/window.h https://www.codeaurora.org/cgit/external/gigabyte/platform/system/core/plain/include/system/window.h?h=caf/jb_3.2_rb5.39
+#    wget --no-check-certificate -O ${STAGING_INCDIR}/system/graphics.h https://www.codeaurora.org/cgit/external/gigabyte/platform/system/core/plain/include/system/graphics.h?h=caf/jb_3.2_rb5.39
+#    mkdir -p ${STAGING_INCDIR}/sync
+#    wget --no-check-certificate -O ${STAGING_INCDIR}/sync/sync.h https://www.codeaurora.org/cgit/external/gigabyte/platform/system/core/plain/include/sync/sync.h?h=caf/jb_3.2_rb5.39
 
-    # patch utils lib to replace log with dlog
-    cp ${S}/../dlog-replace-utils-patch.txt ${WORKSPACE}/base/
-    pushd ${WORKSPACE}/base
+#    # patch utils lib to replace log with dlog
+#    cp ${S}/../dlog-replace-utils-patch.txt ${WORKSPACE}/base/
+#    pushd ${WORKSPACE}/base
 
-    git reset --hard
-    git apply dlog-replace-utils-patch.txt
+#    git reset --hard
+#    git apply dlog-replace-utils-patch.txt
 
     popd
 }
 
-do_clean_extra () {
-    #do clean up the patch
-    pushd ${WORKSPACE}/base
-    git reset --hard
-    popd
-}
+#do_clean_extra () {
+#    #do clean up the patch
+#    pushd ${WORKSPACE}/base
+#    git reset --hard
+#    popd
+#}
+#
+#addtask do_clean_extra before do_clean
 
-addtask do_clean_extra before do_clean
-
-do_install_append_msm8960() {
-   mkdir -p ${D}/usr/lib/hw
-
-   # Move and rename libcamera.so files to hw/machine-specific names.
-   cp ${D}/usr/lib/libcamera.so.0.0.0 ${D}/usr/lib/hw/libcamera.so
-
-   pushd ${D}/usr/lib/hw
-   ln -s libcamera.so ./camera.msm8960.so
-   popd
+do_install() {
 }

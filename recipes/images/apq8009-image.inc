@@ -95,6 +95,13 @@ IMAGE_INSTALL += "wlan-opensource"
 IMAGE_INSTALL += "hostap-daemon-qcacld"
 IMAGE_INSTALL += "wpa-supplicant-qcacld"
 IMAGE_INSTALL += "mm-video-oss"
+IMAGE_INSTALL += "gdb"
+IMAGE_INSTALL += "camera-hal"
+IMAGE_INSTALL += "mm-3a-core"
+IMAGE_INSTALL += "mm-camera-core"
+IMAGE_INSTALL += "mm-camera-lib"
+IMAGE_INSTALL += "mm-camera"
+
 #IMAGE_PREPROCESS_COMMAND += "echo ${MACHINE} >> ${IMAGE_ROOTFS}/target;"
 
 # Below packages are open source packages that depend on proprietary packages
