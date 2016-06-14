@@ -20,5 +20,6 @@ do_install_append () {
         install -m 0644 ${S}/include/hardware/gps.h -D ${D}${includedir}/hardware/gps.h
         install -m 0644 ${S}/include/hardware/hardware.h -D ${D}${includedir}/hardware/hardware.h
         install -m 0644 ${S}/include/hardware/gralloc.h -D ${D}${includedir}/hardware/gralloc.h
+        install -m 0644 ${S}/include/hardware/fb.h -D ${D}${includedir}/hardware/fb.h
         install -m 0644 ${S}/include/hardware/fused_location.h -D ${D}${includedir}/hardware/fused_location.h
 }

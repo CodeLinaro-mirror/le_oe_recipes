@@ -27,6 +27,13 @@ EXTRA_OECONF_append += "--with-sanitized-headers=${STAGING_KERNEL_BUILDDIR}/usr/
 do_install_append() {
    install -m 0755 -d ${D}${includedir}/cutils
    install -m 0644  ${S}/include/cutils/* ${D}${includedir}/cutils
+   install -m 0755 -d ${D}${includedir}/utils
+   install -m 0644  ${S}/include/utils/* ${D}${includedir}/utils
+   install -m 0755 -d ${D}${includedir}/log
+   install -m 0644  ${S}/include/log/* ${D}${includedir}/log
+   install -m 0644 -D ${S}/include/android/log.h ${D}${includedir}/android/log.h
+   install -m 0755 -d ${D}${includedir}/system
+   install -m 0644  ${S}/include/system/* ${D}${includedir}/system
    install -m 0644 -D ${S}/include/android/log.h ${D}${includedir}/android/log.h
    install -m 0644 -D ${S}/include/pixelflinger/format.h ${D}${includedir}/pixelflinger/format.h
    install -m 0644 -D ${S}/include/pixelflinger/pixelflinger.h ${D}${includedir}/pixelflinger/pixelflinger.h
