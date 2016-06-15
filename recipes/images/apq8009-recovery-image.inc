@@ -1,7 +1,5 @@
 # The mkbootimg production process.
-require mdm-bootimg.inc
-
-RECOVERY_IMAGE_ROOTFS_SIZE = "25000000"
+require mdm-recovery-bootimg.inc
 
 DEPENDS += "bzip2 fsconfig-native"
 
@@ -22,5 +20,5 @@ IMAGE_INSTALL += "start-scripts-firmware-links"
 # Below is to generate sparse ext4 recovery image (OE by default supports raw ext4 images)
 
 do_makesystem() {
-	make_ext4fs -s -l ${RECOVERY_IMAGE_ROOTFS_SIZE} ${DEPLOY_DIR_IMAGE}/mdm-recovery-image-${MACHINE}.ext4 ${IMAGE_ROOTFS}
+	make_ext4fs -s -l ${SYSTEM_SIZE_EXT4} ${DEPLOY_DIR_IMAGE}/mdm-recovery-image-${MACHINE}.ext4 ${IMAGE_ROOTFS}
 }
