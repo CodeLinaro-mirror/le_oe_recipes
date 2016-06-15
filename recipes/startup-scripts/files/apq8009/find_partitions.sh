@@ -36,12 +36,16 @@ FindAndMountEXT4 () {
    dir=$2
    mmc_block_device=/dev/block/bootdevice/by-name/$partition
    echo "EMMC : Detected block device : $dir for $partition" > $DUMP_TO_KMSG
-   mkdir -p $dir
+   if [ ! -d $dir ]
+   then
+       mkdir -p $dir
+   fi
    mount -t ext4 $mmc_block_device $dir -o relatime,data=ordered,noauto_da_alloc,discard
    echo "EMMC : Mounting of $mmc_block_device on $dir done"  > $DUMP_TO_KMSG
 }
 
 FindAndMountEXT4 userdata /usr
 FindAndMountEXT4 persist /persist
+FindAndMountEXT4 cache  /cache
 
 exit 0

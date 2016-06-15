@@ -29,23 +29,33 @@
 # find_recovery_partitions        init.d script to dynamically find partitions used in recovery
 #
 
+DUMP_TO_KMSG=/dev/kmsg
+
 UpdateRecoveryVolume () {
    partition=$1
    dir=$2
    fstype=$3
+   echo "EMMC : Update Recovery Volume for Partition :  $partition , Directory : $dir, fstype : $fstype and mmc_block_device : $mmc_block_device" > $DUMP_TO_KMSG
    echo /dev/$mmc_block_device       $dir     $fstype     defaults    0   0 >> /res/recovery_volume_config
 }
 
 FindAndMountEXT4 () {
    partition=$1
    dir=$2
+   fstab_only="$3"
    mmc_block_device=/dev/block/bootdevice/by-name/$partition
+   echo "EMMC : Detected block device : $dir for $partition" > $DUMP_TO_KMSG
    mkdir -p $dir
-   mount -t ext4 $mmc_block_device $dir -o relatime,data=ordered,noauto_da_alloc,discard
-   UpdateRecoveryVolume $1 $2 ext4
+   if [ "$fstab_only" != "1" ]; then
+      mount -t ext4 $mmc_block_device $dir -o relatime,data=ordered,noauto_da_alloc,discard
+      echo "EMMC : Mounting of $mmc_block_device on $dir done"  > $DUMP_TO_KMSG
+   fi
+   UpdateRecoveryVolume $1 $2 "ext4" $mmc_block_device
 }
 
-FindAndMountEXT4 userdata /usr
-FindAndMountEXT4 persist /persist
+FindAndMountEXT4 system     /system  1
+FindAndMountEXT4 userdata  /usr  1
+FindAndMountEXT4 cache    /cache
+FindAndMountEXT4 modem   /firmware
 
 exit
