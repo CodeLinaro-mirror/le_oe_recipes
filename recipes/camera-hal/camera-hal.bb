@@ -13,7 +13,7 @@ inherit autotools
 
 # Need the kernel headers
 #DEPENDS += "virtual/kernel"
-
+DEPENDS += "glib-2.0"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 #re-use non-perf settings
@@ -93,5 +93,5 @@ do_configure_prepend_tmp() {
 #
 #addtask do_clean_extra before do_clean
 
-do_install() {
-}
+#do_install() {
+#}
