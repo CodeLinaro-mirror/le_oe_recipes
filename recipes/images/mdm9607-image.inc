@@ -94,6 +94,7 @@ IMAGE_INSTALL += "wireless-tools"
 IMAGE_INSTALL += "sfe"
 IMAGE_INSTALL += "tinyproxy"
 IMAGE_INSTALL += "iputils"
+IMAGE_INSTALL += "emac"
 
 # Below packages are open source packages that depend on proprietary packages
 
