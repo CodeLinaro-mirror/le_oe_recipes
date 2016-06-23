@@ -91,6 +91,7 @@ IMAGE_INSTALL += "wireless-tools"
 IMAGE_INSTALL += "wpa-supplicant-qcacld"
 IMAGE_INSTALL += "tinyproxy"
 IMAGE_INSTALL += "bt-property"
+IMAGE_INSTALL += "bt-app"
 IMAGE_PREPROCESS_COMMAND += "echo ${MACHINE} >> ${IMAGE_ROOTFS}/target;"
 
 # Below packages are open source packages that depend on proprietary packages
