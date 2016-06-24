@@ -12,7 +12,7 @@ S = "${WORKSPACE}/hardware/qcom/camera/QCamera2/stack"
 inherit autotools
 
 # Need the kernel headers
-#DEPENDS += "virtual/kernel"
+DEPENDS += "virtual/kernel"
 DEPENDS += "glib-2.0"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
@@ -24,8 +24,6 @@ ARM_INSTRUCTION_SET = "arm"
 CFLAGS += "-I${STAGING_INCDIR}"
 CFLAGS += "-I${STAGING_INCDIR}/jpeg/inc"
 CFLAGS += "-I${STAGING_INCDIR}/cameracommon"
-CFLAGS += "-I${STAGING_KERNEL_BUILDDIR}/usr/include"
-CFLAGS += "-I${STAGING_KERNEL_BUILDDIR}/usr/include/media"
 
 EXTRA_OECONF_append = " --enable-debug=no --with-dlog"
 
