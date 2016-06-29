@@ -1,6 +1,6 @@
-diff -aruN shortcut-fe/Makefile shortcut-fe_new/Makefile
---- shortcut-fe/Makefile	2016-06-11 12:32:29.736627300 +0530
-+++ shortcut-fe_new/Makefile	2016-05-21 12:03:20.315956700 +0530
+diff -u a/Makefile b/Makefile
+--- a/Makefile	2016-06-29 15:01:49.069533138 -0700
++++ b/Makefile	2016-06-29 15:02:06.850090762 -0700
 @@ -13,7 +13,8 @@
  #
  # Makefile for Shortcut FE.
@@ -29,27 +29,9 @@ diff -aruN shortcut-fe/Makefile shortcut-fe_new/Makefile
 +clean:
 +	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) clean
 +
-diff -aruN shortcut-fe/sfe.h shortcut-fe_new/sfe.h
---- shortcut-fe/sfe.h	2016-06-11 12:32:29.736627300 +0530
-+++ shortcut-fe_new/sfe.h	2016-05-21 12:03:20.875953200 +0530
-@@ -25,8 +25,13 @@
-  * of any packets is actually correct too.  Right now we're relying on
-  * the bridge layer to do this sort of thing for us.
-  */
--#define SFE_HOOK_ABOVE_BRIDGE 1
-+#define SFE_HOOK_ABOVE_BRIDGE 0
-+#define MAX_INTF_LEN 50
- 
-+
-+#ifndef SFE_SUPPORT_IPV6
-+#define SFE_SUPPORT_IPV6
-+#endif
- /*
-  * Debug output verbosity level.
-  */
-diff -aruN shortcut-fe/sfe_cm.c shortcut-fe_new/sfe_cm.c
---- shortcut-fe/sfe_cm.c	2016-06-11 12:32:29.736627300 +0530
-+++ shortcut-fe_new/sfe_cm.c	2016-06-11 12:47:42.025892953 +0530
+diff -u a/sfe_cm.c b/sfe_cm.c
+--- a/sfe_cm.c	2016-06-29 15:01:49.069533138 -0700
++++ b/sfe_cm.c	2016-06-29 15:05:54.940469488 -0700
 @@ -106,6 +106,7 @@
   * Expose the hook for the receive processing.
   */
@@ -207,24 +189,25 @@ diff -aruN shortcut-fe/sfe_cm.c shortcut-fe_new/sfe_cm.c
  	}
  
  	/*
-@@ -990,6 +1051,8 @@
+@@ -990,17 +1051,6 @@
  		goto exit3;
  	}
  
-+#if 0
-+
- #ifdef CONFIG_NF_CONNTRACK_EVENTS
- 	/*
- 	 * Register a notifier hook to get fast notifications of expired connections.
-@@ -1001,6 +1064,7 @@
- 	}
- #endif
- 
-+#endif
+-#ifdef CONFIG_NF_CONNTRACK_EVENTS
+-	/*
+-	 * Register a notifier hook to get fast notifications of expired connections.
+-	 */
+-	result = nf_conntrack_register_notifier(&init_net, &sfe_cm_conntrack_notifier);
+-	if (result < 0) {
+-		DEBUG_ERROR("can't register nf notifier hook: %d\n", result);
+-		goto exit4;
+-	}
+-#endif
+-
  	spin_lock_init(&sc->lock);
  
  	/*
-@@ -1010,6 +1074,12 @@
+@@ -1010,6 +1060,12 @@
  	RCU_INIT_POINTER(athrs_fast_nat_recv, sfe_cm_recv);
  
  	/*
@@ -237,9 +220,32 @@ diff -aruN shortcut-fe/sfe_cm.c shortcut-fe_new/sfe_cm.c
  	 * Hook the shortcut sync callback.
  	 */
  	sfe_ipv4_register_sync_rule_callback(sfe_cm_sync_rule);
-diff -aruN shortcut-fe/sfe_cm.h shortcut-fe_new/sfe_cm.h
---- shortcut-fe/sfe_cm.h	2016-06-11 12:32:29.736627300 +0530
-+++ shortcut-fe_new/sfe_cm.h	2016-05-21 12:03:21.287950600 +0530
+@@ -1053,6 +1109,11 @@
+ 	RCU_INIT_POINTER(athrs_fast_nat_recv, NULL);
+ 
+ 	/*
++	 * Unregister the delete conntrack callback.
++	 */
++	RCU_INIT_POINTER(delete_sfe_entry, NULL);
++
++	/*
+ 	 * Wait for all callbacks to complete.
+ 	 */
+ 	rcu_barrier();
+@@ -1063,10 +1124,6 @@
+ 	sfe_ipv4_destroy_all_rules_for_dev(NULL);
+ 	sfe_ipv6_destroy_all_rules_for_dev(NULL);
+ 
+-#ifdef CONFIG_NF_CONNTRACK_EVENTS
+-	nf_conntrack_unregister_notifier(&init_net, &sfe_cm_conntrack_notifier);
+-
+-#endif
+ 	nf_unregister_hooks(sfe_cm_ops_post_routing, ARRAY_SIZE(sfe_cm_ops_post_routing));
+ 
+ 	unregister_inet6addr_notifier(&sc->inet6_notifier);
+diff -u a/sfe_cm.h b/sfe_cm.h
+--- a/sfe_cm.h	2016-06-29 15:01:49.069533138 -0700
++++ b/sfe_cm.h	2016-06-29 15:02:06.846090663 -0700
 @@ -20,6 +20,11 @@
   */
  #define SFE_CREATE_FLAG_NO_SEQ_CHECK 0x1
@@ -252,9 +258,27 @@ diff -aruN shortcut-fe/sfe_cm.h shortcut-fe_new/sfe_cm.h
  
  /*
   * IPv6 address structure
-diff -aruN shortcut-fe/sfe_ipv4.c shortcut-fe_new/sfe_ipv4.c
---- shortcut-fe/sfe_ipv4.c	2016-06-11 12:32:29.736627300 +0530
-+++ shortcut-fe_new/sfe_ipv4.c	2016-05-21 12:03:21.387950000 +0530
+diff -u a/sfe.h b/sfe.h
+--- a/sfe.h	2016-06-29 15:01:49.069533138 -0700
++++ b/sfe.h	2016-06-29 15:02:06.846090663 -0700
+@@ -25,8 +25,13 @@
+  * of any packets is actually correct too.  Right now we're relying on
+  * the bridge layer to do this sort of thing for us.
+  */
+-#define SFE_HOOK_ABOVE_BRIDGE 1
++#define SFE_HOOK_ABOVE_BRIDGE 0
++#define MAX_INTF_LEN 50
+ 
++
++#ifndef SFE_SUPPORT_IPV6
++#define SFE_SUPPORT_IPV6
++#endif
+ /*
+  * Debug output verbosity level.
+  */
+diff -u a/sfe_ipv4.c b/sfe_ipv4.c
+--- a/sfe_ipv4.c	2016-06-29 15:01:49.069533138 -0700
++++ b/sfe_ipv4.c	2016-06-29 15:05:06.615430986 -0700
 @@ -248,6 +248,7 @@
  	 */
  	uint64_t rx_packet_count64;	/* Number of packets RX'd */
@@ -335,7 +359,25 @@ diff -aruN shortcut-fe/sfe_ipv4.c shortcut-fe_new/sfe_ipv4.c
  	/*
  	 * Mark outgoing packet.
  	 */
-@@ -1910,28 +1920,30 @@
+@@ -1429,8 +1439,6 @@
+  *	Parse TCP SACK option and update ack according
+  */
+ static bool sfe_ipv4_process_tcp_option_sack(const struct sfe_ipv4_tcp_hdr *th, const uint32_t data_offs,
+-					     uint32_t *ack) __attribute__((always_inline));
+-static bool sfe_ipv4_process_tcp_option_sack(const struct sfe_ipv4_tcp_hdr *th, const uint32_t data_offs,
+ 					     uint32_t *ack)
+ {
+ 	uint32_t length = sizeof(struct sfe_ipv4_tcp_hdr);
+@@ -1668,7 +1676,7 @@
+ 	/*
+ 	 * Are we doing sequence number checking?
+ 	 */
+-	if (likely(!(cm->flags & SFE_IPV4_CONNECTION_MATCH_FLAG_NO_SEQ_CHECK))) {
++	if (unlikely(!(cm->flags & SFE_IPV4_CONNECTION_MATCH_FLAG_NO_SEQ_CHECK))) {
+ 		uint32_t seq;
+ 		uint32_t ack;
+ 		uint32_t sack;
+@@ -1910,28 +1918,30 @@
  	xmit_dev = cm->xmit_dev;
  	skb->dev = xmit_dev;
  
@@ -386,7 +428,7 @@ diff -aruN shortcut-fe/sfe_ipv4.c shortcut-fe_new/sfe_ipv4.c
  	/*
  	 * Mark outgoing packet
  	 */
-@@ -2551,7 +2563,6 @@
+@@ -2551,7 +2561,6 @@
  		}
  	}
  
@@ -394,7 +436,7 @@ diff -aruN shortcut-fe/sfe_ipv4.c shortcut-fe_new/sfe_ipv4.c
  	if (sic->dest_ip.ip != sic->dest_ip_xlate.ip || sic->dest_port != sic->dest_port_xlate) {
  		original_cm->flags |= SFE_IPV4_CONNECTION_MATCH_FLAG_XLATE_DEST;
  		reply_cm->flags |= SFE_IPV4_CONNECTION_MATCH_FLAG_XLATE_SRC;
-@@ -2579,6 +2590,19 @@
+@@ -2579,6 +2588,19 @@
  	c->debug_read_seq = 0;
  	c->last_sync_jiffies = get_jiffies_64();
  
@@ -414,7 +456,16 @@ diff -aruN shortcut-fe/sfe_ipv4.c shortcut-fe_new/sfe_ipv4.c
  	/*
  	 * Take hold of our source and dest devices for the duration of the connection.
  	 */
-@@ -2703,7 +2727,7 @@
+@@ -2623,7 +2645,7 @@
+ 		   dest_dev->name, sic->dest_mac, sic->dest_mac_xlate,
+ 		   &sic->dest_ip.ip, &sic->dest_ip_xlate.ip, ntohs(sic->dest_port), ntohs(sic->dest_port_xlate));
+ 
+-	return 0;
++    return 0;
+ }
+ 
+ /*
+@@ -2703,7 +2725,7 @@
   * sysfs attributes.
   */
  static const struct device_attribute sfe_ipv4_debug_dev_attr =
@@ -423,11 +474,11 @@ diff -aruN shortcut-fe/sfe_ipv4.c shortcut-fe_new/sfe_ipv4.c
  
  /*
   * sfe_ipv4_destroy_all_rules_for_dev()
-@@ -3300,6 +3324,57 @@
+@@ -3300,6 +3322,57 @@
  	.release = sfe_ipv4_debug_dev_release
  };
  
-+static int read_from_v4_iface_proc_entry(struct file *filp,char *buf,size_t count,loff_t *offp )
++static ssize_t read_from_v4_iface_proc_entry(struct file *filp,char *buf,size_t count,loff_t *offp )
 +{
 +	struct sfe_ipv4 *si = &__si;
 +
@@ -445,7 +496,7 @@ diff -aruN shortcut-fe/sfe_ipv4.c shortcut-fe_new/sfe_ipv4.c
 +	return si->iface_length;
 +}
 +
-+static int write_to_v4_iface_proc_entry(struct file *file,const char *buf,int count,void *data )
++static ssize_t write_to_v4_iface_proc_entry(struct file *file,const char *buf,size_t count,loff_t *data )
 +{
 +	struct sfe_ipv4 *si = &__si;
 +
@@ -481,7 +532,7 @@ diff -aruN shortcut-fe/sfe_ipv4.c shortcut-fe_new/sfe_ipv4.c
  #ifdef CONFIG_NF_FLOW_COOKIE
  /*
   * sfe_register_flow_cookie_cb
-@@ -3377,6 +3452,10 @@
+@@ -3377,6 +3450,10 @@
  
  	si->debug_dev = result;
  
@@ -492,9 +543,23 @@ diff -aruN shortcut-fe/sfe_ipv4.c shortcut-fe_new/sfe_ipv4.c
  	/*
  	 * Create a timer to handle periodic statistics.
  	 */
-diff -aruN shortcut-fe/sfe_ipv6.c shortcut-fe_new/sfe_ipv6.c
---- shortcut-fe/sfe_ipv6.c	2016-06-11 12:32:29.736627300 +0530
-+++ shortcut-fe_new/sfe_ipv6.c	2016-05-21 12:03:21.879946900 +0530
+@@ -3415,6 +3492,8 @@
+ 
+ 	unregister_chrdev(si->debug_dev, "sfe_ipv4");
+ 
++	remove_proc_entry("ipv4_iface_name",NULL);
++
+ 	sysfs_remove_file(si->sys_sfe_ipv4, &sfe_ipv4_debug_dev_attr.attr);
+ 
+ 	kobject_put(si->sys_sfe_ipv4);
+@@ -3439,4 +3518,3 @@
+ MODULE_AUTHOR("Qualcomm Atheros Inc.");
+ MODULE_DESCRIPTION("Shortcut Forwarding Engine - IPv4 edition");
+ MODULE_LICENSE("Dual BSD/GPL");
+-
+diff -u a/sfe_ipv6.c b/sfe_ipv6.c
+--- a/sfe_ipv6.c	2016-06-29 15:01:49.069533138 -0700
++++ b/sfe_ipv6.c	2016-06-29 15:03:55.729446035 -0700
 @@ -273,6 +273,7 @@
  	 */
  	uint64_t rx_packet_count64;	/* Number of packets RX'd */
@@ -533,7 +598,18 @@ diff -aruN shortcut-fe/sfe_ipv6.c shortcut-fe_new/sfe_ipv6.c
  
  /*
   * sfe_ipv6_addr_equal()
-@@ -1420,22 +1428,25 @@
+@@ -580,10 +588,6 @@
+ static struct sfe_ipv6_connection_match *
+ sfe_ipv6_find_connection_match(struct sfe_ipv6 *si, struct net_device *dev, uint8_t protocol,
+ 					struct sfe_ipv6_addr *src_ip, __be16 src_port,
+-					struct sfe_ipv6_addr *dest_ip, __be16 dest_port) __attribute__((always_inline));
+-static struct sfe_ipv6_connection_match *
+-sfe_ipv6_find_connection_match(struct sfe_ipv6 *si, struct net_device *dev, uint8_t protocol,
+-					struct sfe_ipv6_addr *src_ip, __be16 src_port,
+ 					struct sfe_ipv6_addr *dest_ip, __be16 dest_port)
+ {
+ 	struct sfe_ipv6_connection_match *cm;
+@@ -1420,22 +1424,25 @@
  	/*
  	 * Check to see if we need to write a header.
  	 */
@@ -575,7 +651,25 @@ diff -aruN shortcut-fe/sfe_ipv6.c shortcut-fe_new/sfe_ipv6.c
  		}
  	}
  
-@@ -1942,25 +1953,27 @@
+@@ -1474,8 +1481,6 @@
+  *	Parse TCP SACK option and update ack according
+  */
+ static bool sfe_ipv6_process_tcp_option_sack(const struct sfe_ipv6_tcp_hdr *th, const uint32_t data_offs,
+-					     uint32_t *ack) __attribute__((always_inline));
+-static bool sfe_ipv6_process_tcp_option_sack(const struct sfe_ipv6_tcp_hdr *th, const uint32_t data_offs,
+ 					     uint32_t *ack)
+ {
+ 	uint32_t length = sizeof(struct sfe_ipv6_tcp_hdr);
+@@ -1712,7 +1717,7 @@
+ 	/*
+ 	 * Are we doing sequence number checking?
+ 	 */
+-	if (likely(!(cm->flags & SFE_IPV6_CONNECTION_MATCH_FLAG_NO_SEQ_CHECK))) {
++	if (unlikely(!(cm->flags & SFE_IPV6_CONNECTION_MATCH_FLAG_NO_SEQ_CHECK))) {
+ 		uint32_t seq;
+ 		uint32_t ack;
+ 		uint32_t sack;
+@@ -1942,25 +1947,27 @@
  	/*
  	 * Check to see if we need to write a header.
  	 */
@@ -620,7 +714,16 @@ diff -aruN shortcut-fe/sfe_ipv6.c shortcut-fe_new/sfe_ipv6.c
  	/*
  	 * Mark outgoing packet
  	 */
-@@ -2599,6 +2612,21 @@
+@@ -2143,7 +2150,7 @@
+ 		si->packets_not_forwarded++;
+ 		spin_unlock_bh(&si->lock);
+ 
+-		DEBUG_TRACE("Unhandled embedded IP protocol: %u\n", icmp_iph->protocol);
++		DEBUG_TRACE("Unhandled embedded IP protocol: %u\n", next_hdr);
+ 		return 0;
+ 	}
+ 
+@@ -2599,6 +2606,21 @@
  	c->debug_read_seq = 0;
  	c->last_sync_jiffies = get_jiffies_64();
  
@@ -642,11 +745,11 @@ diff -aruN shortcut-fe/sfe_ipv6.c shortcut-fe_new/sfe_ipv6.c
  	/*
  	 * Take hold of our source and dest devices for the duration of the connection.
  	 */
-@@ -3314,6 +3342,57 @@
+@@ -3314,6 +3336,57 @@
  	.release = sfe_ipv6_debug_dev_release
  };
  
-+static int read_from_v6_iface_proc_entry(struct file *filp,char *buf,size_t count,loff_t *offp )
++static int read_from_v6_iface_proc_entry(struct file *filp,char *buf,size_t count,loff_t *offp ) 
 +{
 +	struct sfe_ipv6 *si = &__si6;
 +
@@ -664,7 +767,7 @@ diff -aruN shortcut-fe/sfe_ipv6.c shortcut-fe_new/sfe_ipv6.c
 +	return si->iface_length;
 +}
 +
-+static int write_to_v6_iface_proc_entry(struct file *file,const char *buf,int count,void *data )
++static ssize_t write_to_v6_iface_proc_entry(struct file *file,const char *buf,size_t count,loff_t *data )
 +{
 +	struct sfe_ipv6 *si = &__si6;
 +
@@ -700,7 +803,7 @@ diff -aruN shortcut-fe/sfe_ipv6.c shortcut-fe_new/sfe_ipv6.c
  #ifdef CONFIG_NF_FLOW_COOKIE
  /*
   * sfe_ipv6_register_flow_cookie_cb
-@@ -3391,6 +3470,10 @@
+@@ -3391,6 +3464,10 @@
  
  	si->debug_dev = result;
  
@@ -711,3 +814,17 @@ diff -aruN shortcut-fe/sfe_ipv6.c shortcut-fe_new/sfe_ipv6.c
  	/*
  	 * Create a timer to handle periodic statistics.
  	 */
+@@ -3429,6 +3506,8 @@
+ 
+ 	unregister_chrdev(si->debug_dev, "sfe_ipv6");
+ 
++	remove_proc_entry("ipv6_iface_name",NULL);
++
+ 	sysfs_remove_file(si->sys_sfe_ipv6, &sfe_ipv6_debug_dev_attr.attr);
+ 
+ 	kobject_put(si->sys_sfe_ipv6);
+@@ -3453,4 +3532,3 @@
+ MODULE_AUTHOR("Qualcomm Atheros Inc.");
+ MODULE_DESCRIPTION("Shortcut Forwarding Engine - IPv6 support");
+ MODULE_LICENSE("Dual BSD/GPL");
+-
