@@ -20,9 +20,10 @@ BASEWLAN = "${@d.getVar('WLANMOD', False)}"
 
 EXTRA_OECONF += "${@base_conditional('BASEMACHINE', 'mdm9607', '--enable-target-mdm9607=yes', '', d)}"
 EXTRA_OECONF += "${@base_conditional('BASEMACHINE', 'apq8009', '--enable-target-apq8009=yes', '', d)}"
+EXTRA_OECONF += "${@base_conditional('BASEMACHINE', 'apq8016', '--enable-target-apq8016=yes', '', d)}"
 EXTRA_OECONF += "${@base_conditional('BASEWLAN', 'rome', '--enable-target-apq8009-rome=yes', '', d)}"
 
 INITSCRIPT_NAME   = "wlan"
 INITSCRIPT_PARAMS = "remove"
 INITSCRIPT_PARAMS_apq8009 = "start 98 5 . stop 2 0 1 6 ."
-
+INITSCRIPT_PARAMS_apq8016 = "start 98 5 . stop 2 0 1 6 ."

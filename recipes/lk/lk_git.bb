@@ -1,4 +1,4 @@
-inherit deploy
+inherit deploy externalsrc
 
 DESCRIPTION = "Little Kernel bootloader"
 LICENSE = "MIT"
@@ -7,23 +7,28 @@ ${LICENSE};md5=0835ade698e0bcf8506ecda2f7b4f302"
 HOMEPAGE = "https://www.codeaurora.org/gitweb/quic/la?p=kernel/lk.git"
 PROVIDES = "virtual/bootloader"
 FILESPATH =+ "${WORKSPACE}:"
-SRC_URI  = "file://bootable/bootloader/lk/"
-S        = "${WORKDIR}/bootable/bootloader/${PN}"
-PR       = "r15"
+
+PV       = "1.0"
+PR       = "r1"
+EXTERNALSRC="${WORKSPACE}/bootable/bootloader/lk"
+EXTERNALSRC_BUILD="${WORKSPACE}/bootable/bootloader/lk"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-#LK requires BASEMACHINE to be mdm9640  to support one source multiple targets.
-BASEMACHINE        = "mdm9640"
+BASEMACHINE        = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
 
 MY_TARGET          = "${BASEMACHINE}"
 MY_TARGET_apq8009  = "msm8909"
+MY_TARGET_apq8016  = "msm8916"
 MY_TARGET_mdm9607  = "mdm9607"
 MY_TARGET_mdm9607-perf  = "mdm9607"
 
-LIBGCC             = "${STAGING_LIBDIR}/${TARGET_SYS}/4.9.2/libgcc.a"
+BOOTLOADER_NAME = "emmc_appsboot"
+
+LIBGCC             = "${STAGING_LIBDIR}/${TARGET_SYS}/4.9.3/libgcc.a"
 
 EXTRA_OEMAKE = "${MY_TARGET} TOOLCHAIN_PREFIX='${TARGET_PREFIX}'  LIBGCC='${LIBGCC}'"
+EXTRA_OEMAKE_append_apq8016 = " VERIFIED_BOOT=0 DEFAULT_UNLOCK=true EMMC_BOOT=1"
 
 do_install() {
         install -d ${D}/boot

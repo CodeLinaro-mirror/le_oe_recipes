@@ -8,8 +8,9 @@ DEPENDS = " \
              gettext-native \
              e2fsprogs-native \
              ext4-utils-native \
-             virtual/bootloader \
 "
+DEPENDS_append_aarch64 += "lib32-lk"
+DEPENDS_append_arm += "lk"
 
 # Image output types
 IMAGE_FSTYPES = "tar.gz ${INITRAMFS_FSTYPES}"
