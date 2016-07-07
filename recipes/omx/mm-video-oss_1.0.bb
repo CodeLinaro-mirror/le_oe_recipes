@@ -22,7 +22,8 @@ SRC_URI += "file://venus_v4l2.rules"
 PACKAGES = "${PN}"
 
 #DEPENDS += "glib-2.0 virtual/kernel live555 camera-hal  system-core"
-DEPENDS += "glib-2.0 virtual/kernel autogen-native mm-video-oss-headers system-core mm-video-firmware"
+DEPENDS += "glib-2.0 virtual/kernel autogen-native mm-video-oss-headers system-core mm-video-firmware-prebuilt"
+#DEPENDS += "glib-2.0 virtual/kernel autogen-native mm-video-oss-headers system-core"
 #PV = "1.0"
 PR = "r1"
 
