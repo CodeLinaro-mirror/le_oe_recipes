@@ -56,8 +56,8 @@ index d2e3b4c..402f451 100644
  
  #define LOG_TAG "HAL"
 -#include <utils/Log.h>
-+#include <cutils/log.h>
- 
++#include <log/log.h>
+
  /** Base path of the hal modules */
 +#ifndef LINUX_ENABLED
  #define HAL_LIBRARY_PATH1 "/system/lib/hw"
