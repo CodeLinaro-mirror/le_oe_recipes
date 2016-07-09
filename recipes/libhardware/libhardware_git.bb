@@ -22,4 +22,6 @@ do_install_append () {
         install -m 0644 ${S}/include/hardware/gralloc.h -D ${D}${includedir}/hardware/gralloc.h
         install -m 0644 ${S}/include/hardware/fb.h -D ${D}${includedir}/hardware/fb.h
         install -m 0644 ${S}/include/hardware/fused_location.h -D ${D}${includedir}/hardware/fused_location.h
+	install -m 0644 ${S}/include/hardware/hwcomposer.h -D ${D}${includedir}/hardware/hwcomposer.h
+	install -m 0644 ${S}/include/hardware/hwcomposer_defs.h -D ${D}${includedir}/hardware/hwcomposer_defs.h	
 }

@@ -105,7 +105,12 @@ FILES_${PN}-liblog        = "${libdir}/liblog.so.* ${bindir}/logcat ${sysconfdir
 FILES_${PN}-liblog-dev    = "${libdir}/liblog.so ${libdir}/liblog.la"
 FILES_${PN}-liblog-static = "${libdir}/liblog.a"
 
+PACKAGES =+ "${PN}-libsync"
+FILES_${PN}-libsync       = "${libdir}/libsync.so.*"
+
+PACKAGES =+ "${PN}-libutils"
+FILES_${PN}-libutils      = "${libdir}/libutils.so.*"
+
 PACKAGES =+ "${PN}-init-qcom-post"
 FILES_${PN}-init-qcom-post = " ${sysconfdir}/init.d/init_qcom_post"
 INSANE_SKIP_${PN}-init-qcom-post = "file-rdeps"
-
