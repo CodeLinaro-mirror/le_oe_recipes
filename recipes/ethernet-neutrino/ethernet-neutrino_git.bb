@@ -3,7 +3,7 @@ inherit module autotools
 DESCRIPTION = "Neutrino Ethernet driver"
 LICENSE = "MIT-style"
 LIC_FILES_CHKSUM = "file://DWC_ETH_QOS_dev.c;\
-startline=1;endline=71;md5=a39dd084fca37a25a3807a220881694d"
+startline=1;endline=71;md5=647bc30ad1427f25bad8967a98d3aecb"
 
 FILES_${PN}     += "${base_libdir}/modules/${KERNEL_VERSION}/"
 FILES_${PN}     += "${sysconfdir}/init.d/neutrino_start_stop_le"
