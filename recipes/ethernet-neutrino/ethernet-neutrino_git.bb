@@ -21,6 +21,7 @@ S = "${WORKDIR}/qcom-opensource/ethernet/neutrino/driver/"
 EXTRA_OEMAKE =+ "LBITS=32"
 EXTRA_OEMAKE =+ "DWC_ETH_QOS_DISABLE_PLT_INIT=1"
 EXTRA_OEMAKE =+ "DWC_ETH_QOS_ENABLE_ETHTOOL=1"
+EXTRA_OEMAKE =+ "CONFIG_IPA_OFFLOAD=1"
 
 do_install() {
     module_do_install
