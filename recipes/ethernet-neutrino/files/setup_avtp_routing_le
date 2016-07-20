@@ -24,22 +24,27 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Neutrino Ethernet Driver init.d script to load ethernet driver
+# Create rule in ebtables to receive AVTP (802.1Q type) packets only on eth0 interface.
+# This will cause all 802.1Q packets to be received on eth0 and not on bridge0.
 
-export MODULE_BASE=/lib/modules/`uname -r`/
 set -e
 
 case "$1" in
   start)
-        echo -n "Starting/Loading Ethernet Driver: "
-        echo "Neutrino:start/load" > /dev/kmsg
-        insmod $MODULE_BASE/extra/DWC_ETH_QOS.ko fw_filename="DWC_ETH_QOS_fw.bin" disable_platform_init=1
-        echo "done loading ethernet driver"
+        echo -n "Creating ebtables rule for 802.1Q packets: "
+        if [ -e /sys/class/net/bridge0/bridge ]; then
+          ebtables -t broute -A BROUTING -i eth0 -p 802_1Q -j DROP
+        fi
+        echo "Done creating routing rule"
+        echo "802.1Q packets will be received on eth0"
         ;;
   stop)
-        echo -n "Unloading Ethernet Driver "
-        rmmod DWC_ETH_QOS
-        echo "done unloading ethernet driver"
+        echo -n "Removing ebtables rule for 802.1Q packets: "
+        if [ -e /sys/class/net/bridge0/bridge ]; then
+          ebtables -t broute -D BROUTING -i eth0 -p 802_1Q -j DROP
+        fi
+        echo "Done removing routing rule"
+        echo "802.1Q packets will be received on bridge0"
         ;;
   restart)
         $0 stop
