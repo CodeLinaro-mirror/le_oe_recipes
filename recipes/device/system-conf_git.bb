@@ -1,4 +1,4 @@
-inherit autotools update-rc.d
+inherit autotools-brokensep update-rc.d
 
 DESCRIPTION = "Device specific config"
 LICENSE = "ISC"
@@ -19,8 +19,8 @@ BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
 BASEWLAN = "${@d.getVar('WLANMOD', False)}"
 
 EXTRA_OECONF += "${@base_conditional('BASEMACHINE', 'mdm9607', '--enable-target-mdm9607=yes', '', d)}"
-EXTRA_OECONF += "${@base_conditional('BASEMACHINE', 'apq8009', '--enable-target-apq8009=yes', '', d)}"
-EXTRA_OECONF += "${@base_conditional('BASEMACHINE', 'apq8016', '--enable-target-apq8016=yes', '', d)}"
+EXTRA_OECONF += "${@base_conditional('BASEMACHINE', 'apq8009', '--enable-wlan-pronto=yes', '', d)}"
+EXTRA_OECONF += "${@base_conditional('BASEMACHINE', 'apq8016', '--enable-wlan-pronto=yes', '', d)}"
 EXTRA_OECONF += "${@base_conditional('BASEWLAN', 'rome', '--enable-target-apq8009-rome=yes', '', d)}"
 
 INITSCRIPT_NAME   = "wlan"
