@@ -30,7 +30,6 @@ do_install() {
     install -d ${D}${sysconfdir}/init.d
     install -m 0755 ${WORKDIR}/neutrino_start_stop_le ${D}${sysconfdir}/init.d
     install -m 0755 ${WORKDIR}/setup_avtp_routing_le ${D}${sysconfdir}/init.d
-    install -m 0644 ${S}/DWC_ETH_QOS_yapphdr.h ${STAGING_INCDIR}/
 }
 
 pkg_postinst_${PN} () {
