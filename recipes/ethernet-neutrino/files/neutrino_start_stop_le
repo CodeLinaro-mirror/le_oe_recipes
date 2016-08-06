@@ -33,7 +33,7 @@ case "$1" in
   start)
         echo -n "Starting/Loading Ethernet Driver: "
         echo "Neutrino:start/load" > /dev/kmsg
-        insmod $MODULE_BASE/extra/DWC_ETH_QOS.ko fw_filename="DWC_ETH_QOS_fw.bin" disable_platform_init=1
+        insmod $MODULE_BASE/extra/DWC_ETH_QOS.ko fw_filename="DWC_ETH_QOS_fw.bin"
         echo "done loading ethernet driver"
         ;;
   stop)
