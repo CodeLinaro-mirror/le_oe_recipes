@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://examples/LICENSE;md5=81ccd62d4bc28bafc5e1a2576536b927
 		    file://lib/avtp_pipeline/LICENSE;md5=8f7b370a91d698ed80d2d20e8e01fbb6"
 PR = "r0"
 
-DEPENDS += "alsa-lib alsa-intf libpcap pciutils cmake-native"
+DEPENDS += "alsa-lib alsa-intf libpcap pciutils cmake-native glib-2.0"
 
 FILESPATH =+ "${WORKSPACE}:"
 SRC_URI = "file://external/open-avb/"
