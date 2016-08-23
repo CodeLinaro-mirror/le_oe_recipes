@@ -13,6 +13,7 @@ SRC_URI = "file://external/compat-wireless/drivers/net/ethernet/atheros/alx/ \
 S = "${WORKDIR}/external/compat-wireless/drivers/net/ethernet/atheros/alx/"
 
 FILES_${PN}="/etc/init.d/start_alx_le"
+EXTRA_OEMAKE =+ "CONFIG_IPA_OFFLOAD=1"
 
 do_install() {
     module_do_install
