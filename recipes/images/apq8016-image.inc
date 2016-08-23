@@ -5,6 +5,8 @@ IMAGE_INSTALL += "packagegroup-core-boot"
 IMAGE_INSTALL += "${ROOTFS_PKGMANAGE_BOOTSTRAP}"
 IMAGE_INSTALL += "${CORE_IMAGE_EXTRA_INSTALL}"
 
+IMAGE_INSTALL += "packagegroup-core-selinux"
+
 # The MSM Linux minimal boot image files.
 #IMAGE_INSTALL += "alsa-intf"
 IMAGE_INSTALL += "alsa-lib"
@@ -112,6 +114,5 @@ IMAGE_INSTALL += "wpa-supplicant-qcacld"
 # Below is to generate sparse ext4 system image (OE by default supports raw ext4 images)
 
 do_makesystem() {
-
     make_ext4fs -s -l ${SYSTEM_SIZE_EXT4} ${DEPLOY_DIR_IMAGE}/${MACHINE}-sysfs.ext4 ${IMAGE_ROOTFS}
 }
