@@ -9,14 +9,15 @@ ${LICENSE};md5=3775480a712fc46a69647678acb234cb"
 FILESPATH =+ "${WORKSPACE}:"
 SRC_URI = "file://hardware/qcom/gps/"
 S = "${WORKDIR}/hardware/qcom/gps"
-DEPENDS = "glib-2.0 libhardware qmi qmi-framework data"
+DEPENDS = "glib-2.0 libhardware qmi qmi-framework data loc-pla loc-flp-hdr"
 EXTRA_OECONF = "--with-libhardware-includes=${STAGING_INCDIR} \
                 --with-core-includes=${WORKSPACE}/system/core/include \
+                --with-locflp-includes=${STAGING_INCDIR}/loc-flp-hdr \
                 --with-glib"
 
 
 CPPFLAGS += "-I${WORKSPACE}/base/include"
 
 do_install_append() {
-    install -m 0644 -D ${S}/etc/gps.conf ${D}${sysconfdir}/gps.conf
+   install -m 0644 -D ${S}/etc/gps.conf ${D}${sysconfdir}/gps.conf
 }
