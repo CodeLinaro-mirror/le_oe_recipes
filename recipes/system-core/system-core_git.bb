@@ -22,7 +22,9 @@ EXTRA_OECONF_append_msm8960 = " --with-host-os=${HOST_OS}"
 EXTRA_OECONF_append_msm8974 = " --with-host-os=${HOST_OS}"
 EXTRA_OECONF_append_msm8610 = " --with-host-os=${HOST_OS}"
 EXTRA_OECONF_append_msm8226 = " --with-host-os=${HOST_OS}"
-EXTRA_OECONF_append += "--with-sanitized-headers=${STAGING_KERNEL_BUILDDIR}/usr/include"
+EXTRA_OECONF_append += "--with-sanitized-headers=${STAGING_KERNEL_BUILDDIR}/usr/include \
+                        --with-updated-atomic-functions"
+
 
 do_install_append() {
    install -m 0755 -d ${D}${includedir}/cutils
