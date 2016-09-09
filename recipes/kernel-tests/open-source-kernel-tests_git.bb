@@ -33,6 +33,7 @@ EXTRA_OECONF_append = " --with-kflags="ARCH=arm64""
 
 EXTRA_OECONF_append_apq8016 = " --disable-msm_bus"
 EXTRA_OECONF_append_apq8016 += " --disable-swp"
+EXTRA_OECONF_append_apq8016 += " --disable-qrng"
 
 FILES_${PN}-dbg = "/kernel-tests/*/.debug/*"
 FILES_${PN} = "/kernel-tests/*"
