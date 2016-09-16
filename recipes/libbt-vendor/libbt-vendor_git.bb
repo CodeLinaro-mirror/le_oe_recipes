@@ -7,7 +7,7 @@ LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/\
 ${LICENSE};md5=89aea4e17d99a7cacdbeed46a0096b10"
 
-DEPENDS = "common system-core hci-qcomm-init"
+DEPENDS = "common system-core hci-qcomm-init glib-2.0"
 RDEPENDS_${PN} = "system-core-libcutils"
 
 FILESPATH =+ "${WORKSPACE}:"
@@ -19,6 +19,7 @@ CFLAGS_append = " -DBT_SOC_TYPE_ROME"
 
 EXTRA_OECONF = "--with-common-includes="${WORKSPACE}/hardware/libhardware/include" \
                 --with-lib-path=${STAGING_LIBDIR} \
+                --with-glib \
                "
 
 do_install_append() {
