@@ -133,6 +133,10 @@ do_shared_workdir () {
 
 do_install_append() {
     oe_runmake_call -C ${STAGING_KERNEL_DIR} ARCH=${ARCH} CC="${KERNEL_CC}" LD="${KERNEL_LD}" headers_install O=${STAGING_KERNEL_BUILDDIR}
+
+    #Below needs to be removed after further debug
+    cp ${STAGING_KERNEL_DIR}/include/linux/sync.h ${STAGING_KERNEL_BUILDDIR}/usr/include/linux/
+    cp ${STAGING_KERNEL_DIR}/include/linux/sw_sync.h ${STAGING_KERNEL_BUILDDIR}/usr/include/linux/
 }
 
 do_deploy () {
