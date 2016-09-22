@@ -1,2 +1,3 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-SRC_URI += "file://Remove-MLS-constraints.patch"
+SRC_URI += "file://Remove-MLS-constraints.patch \
+            file://selinux-Use-monolithic-policy.patch"
