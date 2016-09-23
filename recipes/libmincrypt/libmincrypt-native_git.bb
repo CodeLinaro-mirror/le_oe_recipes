@@ -1,30 +1,16 @@
-inherit native
-
-PR = "r0"
-
-MY_PN = "mincrypt"
-MY_LPN = "libmincrypt"
+inherit native autotools pkgconfig
 
 DESCRIPTION = "Minimalistic encryption library from Android"
-LICENSE = "BSD"
-LIC_FILES_CHKSUM = "file://NOTICE;md5=c19179f3430fd533888100ab6616e114"
-HOMEPAGE = "http://android.git.kernel.org/?p=platform/system/core.git"
+HOMEPAGE = "http://developer.android.com/"
+LICENSE = "Apache-2.0"
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/\
+${LICENSE};md5=89aea4e17d99a7cacdbeed46a0096b10"
 
-# Handle do_fetch ourselves...  The automated tools don't work nicely with this...
-do_fetch () {
-	install -d ${S}/include
-	cp -rf ${WORKSPACE}/system/core/${MY_LPN}/* ${S}
-	cp -rf ${WORKSPACE}/system/core/include/${MY_PN} ${S}/include
-	cp -f ${THISDIR}/files/makefile ${S}
-}
+PR = "r1"
 
-EXTRA_OEMAKE = "INCLUDES='-I./include'"
+FILESPATH =+ "${WORKSPACE}/system/core/:"
+SRC_URI   = "file://libmincrypt"
 
-do_install() {
-	install -d ${D}${includedir}/${MY_PN} ${D}${libdir}/${MY_PN}
-	install include/${MY_PN}/*.h ${D}${includedir}/${MY_PN}
-	install ${MY_LPN}.a ${D}${libdir}/${MY_PN}
-}
+S = "${WORKDIR}/libmincrypt"
 
-NATIVE_INSTALL_WORKS = "1"
-
+EXTRA_OECONF = " --with-core-includes=${WORKSPACE}/system/core/include"
