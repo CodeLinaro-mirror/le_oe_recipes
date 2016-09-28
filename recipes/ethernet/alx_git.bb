@@ -4,6 +4,8 @@ DESCRIPTION = "Qualcomm Atheros Gigabit Ethernet Driver"
 LICENSE = "ISC"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/${LICENSE};md5=f3b90e78ea0cffb20bf5cca7947a896d"
 
+DEPENDS = "virtual/kernel"
+
 do_unpack[deptask] = "do_populate_sysroot"
 PR = "r4-${KERNEL_VERSION}"
 
@@ -13,7 +15,7 @@ SRC_URI = "file://external/compat-wireless/drivers/net/ethernet/atheros/alx/ \
 S = "${WORKDIR}/external/compat-wireless/drivers/net/ethernet/atheros/alx/"
 
 FILES_${PN}="/etc/init.d/start_alx_le"
-EXTRA_OEMAKE =+ "CONFIG_IPA_OFFLOAD=1"
+#EXTRA_OEMAKE =+ "CONFIG_IPA_OFFLOAD=1"
 
 do_install() {
     module_do_install

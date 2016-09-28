@@ -5,11 +5,13 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 COMPATIBLE_MACHINE = "(mdm9640|mdm9640-perf)"
 BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
+EXTRA_KERNEL_CMD_PARAMS ?= ""
 
 # Default image type is zImage, change here if needed.
-#KERNEL_IMAGETYPE = "zImage"
+KERNEL_IMAGETYPE = ""
 # Where built kernel lies in the kernel tree
-#KERNEL_OUTPUT ?= "arch/${ARCH}/boot/${KERNEL_IMAGETYPE}"
+zImage_VAR="zImage"
+KERNEL_OUTPUT = "arch/${ARCH}/boot/${zImage_VAR}"
 #KERNEL_IMAGEDEST = "boot"
 KERNEL_IMAGETYPE_FOR_MAKE = ""
 
@@ -35,10 +37,10 @@ PACKAGES = "kernel kernel-base kernel-vmlinux kernel-dev kernel-modules"
 RDEPENDS_kernel-base = ""
 
 # Put the zImage in the kernel-dev pkg
-FILES_kernel-dev += "/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION}"
+FILES_kernel-dev += "/${KERNEL_IMAGEDEST}/${zImage_VAR}-${KERNEL_VERSION}"
 
 do_configure () {
-	oe_runmake_call -C ${S} ARCH=${ARCH} ${KERNEL_EXTRA_ARGS} ${KERNEL_DEFCONFIG}
+       oe_runmake_call -C ${S} ARCH=${ARCH} ${KERNEL_EXTRA_ARGS} ${KERNEL_DEFCONFIG}
 }
 
 do_shared_workdir () {
@@ -114,7 +116,7 @@ do_shared_workdir () {
 
         # Make vmlinux available as soon as possible
         install -d ${STAGING_DIR_TARGET}/${KERNEL_IMAGEDEST}
-        install -m 0644 ${KERNEL_OUTPUT} ${STAGING_DIR_TARGET}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION}
+        install -m 0644 ${KERNEL_OUTPUT} ${STAGING_DIR_TARGET}/${KERNEL_IMAGEDEST}/${zImage_VAR}-${KERNEL_VERSION}
         install -m 0644 vmlinux ${STAGING_DIR_TARGET}/${KERNEL_IMAGEDEST}/vmlinux-${KERNEL_VERSION}
         install -m 0644 vmlinux ${STAGING_DIR_TARGET}/${KERNEL_IMAGEDEST}/vmlinux
 }
@@ -123,39 +125,43 @@ do_install_append() {
     oe_runmake_call -C ${STAGING_KERNEL_DIR} ARCH=${ARCH} CC="${KERNEL_CC}" LD="${KERNEL_LD}" headers_install O=${STAGING_KERNEL_BUILDDIR}
 }
 
-do_deploy () {
-# Make bootimage
+do_deploy_prepend() {
 
-    dtb_files=`find ${B}/arch/arm/boot/dts -iname *${MACHINE_DTS_NAME}*.dtb | awk -Fdts/ '{print $NF}' | awk -F[.][d] '{print $1}'`
+    if [ -f ${D}/${KERNEL_IMAGEDEST}/-${KERNEL_VERSION} ]; then
+        mv ${D}/${KERNEL_IMAGEDEST}/-${KERNEL_VERSION} ${D}/${KERNEL_IMAGEDEST}/${zImage_VAR}-${KERNEL_VERSION}
+    fi
+    dtb_files=`find ${B}/arch/${ARCH}/boot/dts -iname *${MACHINE_DTS_NAME}*.dtb | awk -Fdts/ '{print $NF}' | awk -F[.][d] '{print $1}'`
 
     # Create separate images with dtb appended to zImage for all targets.
     for d in ${dtb_files}; do
-	 #Strip qcom from the result if its present.
+         #Strip qcom from the result if its present.
        targets=`echo ${d#${MACHINE_DTS_NAME}-}| awk '{split($0,a, "/");print a[2]}'`
-	 #If dtb are stored inside qcom then we need to search for them inside qcom, else inside dts.
+         #If dtb are stored inside qcom then we need to search for them inside qcom, else inside dts.
        qcom_check=`echo ${d}| awk '{split($0,a, "/");print a[1]}'`
-	   if [ ${qcom_check} == "qcom" ]; then
-		cat ${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION} ${B}/arch/arm/boot/dts/${d}.dtb > ${B}/arch/arm/boot/dts/qcom/dtb-${KERNEL_IMAGETYPE}-${KERNEL_VERSION}-${targets}
-	    ${STAGING_BINDIR_NATIVE}/dtbtool ${B}/arch/arm/boot/dts/qcom/ -s ${PAGE_SIZE} -o ${D}/${KERNEL_IMAGEDEST}/masterDTB -p ${B}/scripts/dtc/ -v
-	   else
-        cat ${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION} ${B}/arch/arm/boot/dts/${d}.dtb > ${B}/arch/arm/boot/dts/dtb-${KERNEL_IMAGETYPE}-${KERNEL_VERSION}-${targets}
-	    ${STAGING_BINDIR_NATIVE}/dtbtool ${B}/arch/arm/boot/dts/ -s ${PAGE_SIZE} -o ${D}/${KERNEL_IMAGEDEST}/masterDTB -p ${B}/scripts/dtc/ -v
-	   fi
-    done
+           if [ ${qcom_check} == "qcom" ]; then
+                cat ${D}/${KERNEL_IMAGEDEST}/${zImage_VAR}-${KERNEL_VERSION} ${B}/arch/arm/boot/dts/${d}.dtb > ${B}/arch/arm/boot/dts/qcom/dtb-${zImage_VAR}-${KERNEL_VERSION}-${targets}
 
+            ${STAGING_BINDIR_NATIVE}/dtbtool ${B}/arch/arm/boot/dts/qcom/ -s ${PAGE_SIZE} -o ${D}/${KERNEL_IMAGEDEST}/masterDTB -p ${B}/scripts/dtc/ -v
+           else
+        cat ${D}/${KERNEL_IMAGEDEST}/${zImage_VAR}-${KERNEL_VERSION} ${B}/arch/arm/boot/dts/${d}.dtb > ${B}/arch/arm/boot/dts/dtb-${zImage_VAR}-${KERNEL_VERSION}-${targets}
+            ${STAGING_BINDIR_NATIVE}/dtbtool ${B}/arch/arm/boot/dts/ -s ${PAGE_SIZE} -o ${D}/${KERNEL_IMAGEDEST}/masterDTB -p ${B}/scripts/dtc/ -v
+           fi
+    done
+}
+do_deploy () {
+
+        extra_mkbootimg_params='--dt ${D}/${KERNEL_IMAGEDEST}/masterDTB --tags-addr ${MACHINE_KERNEL_TAGS_OFFSET}'
 
     mkdir -p ${DEPLOY_DIR_IMAGE}
     cmdparams='noinitrd  rw console=ttyHSL0,115200,n8 androidboot.hardware=qcom ehci-hcd.park=3 msm_rtb.filter=0x37 lpm_levels.sleep_disabled=1 ${EXTRA_KERNEL_CMD_PARAMS}'
 
-    # Updated base address according to new memory map.
-    ${STAGING_BINDIR_NATIVE}/mkbootimg --kernel ${D}/${KERNEL_IMAGEDEST}/${KERNEL_IMAGETYPE}-${KERNEL_VERSION} \
-        --dt ${D}/${KERNEL_IMAGEDEST}/masterDTB \
+    # Make bootimage
+    ${STAGING_BINDIR_NATIVE}/mkbootimg --kernel ${D}/${KERNEL_IMAGEDEST}/${zImage_VAR}-${KERNEL_VERSION} \
         --ramdisk /dev/null \
         --cmdline "${cmdparams}" \
         --pagesize ${PAGE_SIZE} \
         --base ${MACHINE_KERNEL_BASE} \
-        --tags-addr ${MACHINE_KERNEL_TAGS_OFFSET} \
         --ramdisk_offset 0x0 \
-        --output ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img
+        ${extra_mkbootimg_params} --output ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img
 
 }

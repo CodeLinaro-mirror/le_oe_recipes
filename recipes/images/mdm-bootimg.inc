@@ -10,6 +10,7 @@ DEPENDS = " \
              yaffs2-utils-native \
              e2fsprogs-native \
              ext4-utils-native \
+             mtd-utils-native \
 "
 # Image output types
 IMAGE_FSTYPES = "tar.gz ${INITRAMFS_FSTYPES}"
