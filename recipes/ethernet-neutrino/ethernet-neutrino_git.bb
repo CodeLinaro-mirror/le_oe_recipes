@@ -38,7 +38,7 @@ do_install() {
 pkg_postinst_${PN} () {
     [ -n "$D" ] && OPT="-r $D" || OPT="-s"
     update-rc.d $OPT -f neutrino_start_stop_le remove
-    update-rc.d $OPT neutrino_start_stop_le start 35 5 . stop 15 0 1 6 .
+    update-rc.d $OPT neutrino_start_stop_le start 37 S . stop 63 0 1 6 .
     update-rc.d $OPT -f setup_avtp_routing_le remove
-    update-rc.d $OPT setup_avtp_routing_le start 91 5 . stop 15 0 1 6 .
+    update-rc.d $OPT setup_avtp_routing_le start 91 S . stop 9 0 1 6 .
 }
