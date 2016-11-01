@@ -15,7 +15,8 @@ IMAGE_INSTALL += "tinycompress"
 IMAGE_INSTALL += "tinyalsa"
 
 # AUDIO HAL
-#IMAGE_INSTALL += "audiohal"
+#IMAGE_INSTALL += "libhardware"
+IMAGE_INSTALL += "audiohal"
 
 
 #IMAGE_INSTALL += "alx"
