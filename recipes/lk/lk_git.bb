@@ -14,7 +14,7 @@ PR       = "r13"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 #re-use non-perf settings
-BASEMACHINE        = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
+BASEMACHINE        = "${@d.getVar('MACHINE', True).replace('-perf', '').replace('-2k', '')}"
 
 LIBGCC_9615-cdp    = "${STAGING_LIBDIR}/${TARGET_SYS}/4.8.1/libgcc.a"
 LIBGCC_mdm9625     = "${STAGING_LIBDIR}/${TARGET_SYS}/4.8.1/libgcc.a"
