@@ -18,7 +18,6 @@
 # Driver interface for madwifi driver
 #CONFIG_DRIVER_MADWIFI=y
 #CFLAGS += -I../../madwifi # change to the madwifi source directory
-
 # Driver interface for drivers using the nl80211 kernel interface
 CONFIG_DRIVER_NL80211=y
 # driver_nl80211.c requires a rather new libnl (version 1.1) which may not be
@@ -196,3 +195,8 @@ CONFIG_OS=unix
 
 # Enable ACS to make host driver be capable of advertising ACS offload feature
 CONFIG_ACS=y
+
+# Interworking (IEEE 802.11u)
+# This can be used to enable functionality to improve interworking with
+# external networks.
+CONFIG_INTERWORKING=y
