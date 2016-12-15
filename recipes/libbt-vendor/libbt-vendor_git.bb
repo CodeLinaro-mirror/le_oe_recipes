@@ -15,12 +15,14 @@ SRC_URI = "file://hardware/qcom/bt/libbt-vendor/"
 
 S = "${WORKDIR}/hardware/qcom/bt/libbt-vendor/"
 
-CFLAGS_append = " -DBT_SOC_TYPE_ROME"
-
 EXTRA_OECONF = "--with-common-includes="${WORKSPACE}/hardware/libhardware/include" \
                 --with-lib-path=${STAGING_LIBDIR} \
                 --with-glib \
                "
+
+#re-use non-perf settings
+BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
+EXTRA_OECONF += "--enable-target=${BASEMACHINE}"
 
 do_install_append() {
        mv ${D}/usr/lib/libbt-vendor.so.0 ${D}/usr/lib/libbt-vendor.so

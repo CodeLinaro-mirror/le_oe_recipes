@@ -15,6 +15,7 @@ SRC_URI += "\
             file://base.cfg \
             file://syslog-startup.conf \
             file://busybox_klogd.patch;patchdir=.. \
+            file://busybox_revert_use_sendfile.patch \
 "
 
 prefix = ""
