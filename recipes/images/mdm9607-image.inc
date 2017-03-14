@@ -101,3 +101,8 @@ IMAGE_INSTALL += "emac"
 QMI_DIR_PRESENT = "${@os.path.exists('${WORKSPACE}/qmi')}"
 IMAGE_INSTALL += "${@base_conditional('QMI_DIR_PRESENT', 'True', 'wpa-supplicant-qcacld', '', d)}"
 
+# install pmipv6 if pmipv6 folder is present
+PMIPV6_DIR_PRESENT = "${@os.path.exists('${WORKSPACE}/pmipv6')}"
+IMAGE_INSTALL += "${@base_conditional('PMIPV6_DIR_PRESENT', 'True', 'pmipv6', '', d)}"
+IMAGE_INSTALL += "${@base_conditional('PMIPV6_DIR_PRESENT', 'True', 'pmipv6radius', '', d)}"
+
