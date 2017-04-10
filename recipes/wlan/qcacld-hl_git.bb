@@ -4,10 +4,10 @@ DESCRIPTION = "Qualcomm Atheros WLAN CLD high latency driver"
 LICENSE = "ISC"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/${LICENSE};md5=f3b90e78ea0cffb20bf5cca7947a896d"
 
-# mdmcalifornium: modulename = wlan_sdio.ko     chip name - qca9377
+# mdm9650: modulename = wlan_sdio.ko     chip name - qca9377
 # others        : modulename = wlan.ko          chip name -
-WLAN_MODULE_NAME = "${@base_conditional('BASEMACHINE', 'mdmcalifornium', 'wlan_sdio', 'wlan', d)}"
-CHIP_NAME = "${@base_conditional('BASEMACHINE', 'mdmcalifornium', 'qca9377', '', d)}"
+WLAN_MODULE_NAME = "${@base_conditional('BASEMACHINE', 'mdm9650', 'wlan_sdio', 'wlan', d)}"
+CHIP_NAME = "${@base_conditional('BASEMACHINE', 'mdm9650', 'qca9377', '', d)}"
 
 FILES_${PN}     += "${base_libdir}/firmware/wlan/*"
 FILES_${PN}     += "${base_libdir}/modules/${KERNEL_VERSION}/extra/${WLAN_MODULE_NAME}.ko"
