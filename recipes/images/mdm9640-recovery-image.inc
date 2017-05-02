@@ -6,7 +6,7 @@ DEPENDS += "bzip2 fsconfig-native"
 # Image output types
 IMAGE_FSTYPES += "ubi"
 
-MKUBIFS_ARGS = "-m 4096 -e 253952 -c 83 -F"
+MKUBIFS_ARGS = "-m 2048 -e 126976 -c 83 -F"
 
 UBI_VOLNAME = "rootfs"
 

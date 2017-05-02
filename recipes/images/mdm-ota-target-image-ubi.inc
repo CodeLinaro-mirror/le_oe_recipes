@@ -28,6 +28,7 @@ cp ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img ${OTA_TARGET_IMAGE_ROOTFS_UBI}/BOOTAB
 
 cp ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img ${OTA_TARGET_IMAGE_ROOTFS_UBI}/BOOTABLE_IMAGES/recovery.img
 
+cp ${DEPLOY_DIR_IMAGE}/appsboot.mbn ${OTA_TARGET_IMAGE_ROOTFS_UBI}/BOOTABLE_IMAGES/appsboot.mbn
 
 # copy the contents of system rootfs
 cp -r ${BASE_IMAGE_ROOTFS_UBI}/. ${OTA_TARGET_IMAGE_ROOTFS_UBI}/SYSTEM/.
@@ -37,6 +38,13 @@ cp -r ${IMAGE_ROOTFS}/. ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/.
 
 #generate recovery.fstab which is used by the updater-script
 #echo #mount point fstype device [device2] >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/recovery.fstab
+echo /tz       mtd     tz >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/recovery.fstab
+echo /rpm      mtd     rpm >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/recovery.fstab
+echo /aboot    mtd     aboot >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/recovery.fstab
+echo /tzbak       mtd     tzbak >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/recovery.fstab
+echo /rpmbak      mtd     rpmbak >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/recovery.fstab
+echo /abootbak    mtd     abootbak >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/recovery.fstab
+echo /misc    mtd     misc >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/recovery.fstab
 echo /boot     mtd     boot >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/recovery.fstab
 echo /cache    ubifs  cache >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/recovery.fstab
 echo /data     ubifs  userdata >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/recovery.fstab
@@ -55,13 +63,22 @@ cp   ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RECOVERY/usr/bin/updater ${OTA_TARGET_IMAGE_
 
 # copy contents of META folder
 #recovery_api_version is from recovery module
-echo recovery_api_version=3 >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/misc_info.txt
+echo 3 >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/recovery-api-version.txt
 
 #blocksize = BOARD_FLASH_BLOCK_SIZE
 echo blocksize=131072 >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/misc_info.txt
 
 #boot_size: Size of boot partition from partition.xml
 echo boot_size=0x00A00000 >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/misc_info.txt
+
+#aboot_size: Size of aboot partition from partition.xml
+echo aboot_size=0x00080000 >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/misc_info.txt
+
+#tz_size: Size of tz partition from partition.xml
+echo tz_size=0x00080000 >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/misc_info.txt
+
+#rpm_size: Size of rpm partition from partition.xml
+echo rpm_size=0x00060000 >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/misc_info.txt
 
 #recovery_size : Size of recovery partition from partition.xml
 echo recovery_size=0x00A00000 >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}/META/misc_info.txt
