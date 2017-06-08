@@ -3,8 +3,8 @@ inherit kernel
 DESCRIPTION = "QuIC Linux Kernel"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
-COMPATIBLE_MACHINE = "(mdm9640|mdm9640-perf)"
-BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
+COMPATIBLE_MACHINE = "(mdm9640|mdm9640-perf|mdm9640-hf)"
+BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '').replace('-hf', '')}"
 EXTRA_KERNEL_CMD_PARAMS ?= ""
 
 # Default image type is zImage, change here if needed.

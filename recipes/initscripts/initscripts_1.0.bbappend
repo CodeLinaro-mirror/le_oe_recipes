@@ -3,7 +3,7 @@ PR = "r157"
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${PV}:"
 
 #re-use non-perf settings
-BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
+BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '').replace('-hf', '')}"
 
 SRC_URI += "file://umountfs"
 

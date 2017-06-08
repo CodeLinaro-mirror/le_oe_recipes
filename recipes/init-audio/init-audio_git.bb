@@ -8,7 +8,7 @@ PR = "r5"
 DEPENDS_append_mdm9635 +="alsa-intf"
 
 #re-use non-perf settings
-BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
+BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '').replace('-hf', '')}"
 
 SRC_URI = "file://init_qcom_audio"
 SRC_URI_msm8974 = "file://${BASEMACHINE}/init_qcom_audio"

@@ -17,6 +17,7 @@ IMAGE_FSTYPES = "tar.gz ${INITRAMFS_FSTYPES}"
 
 IMAGE_PREPROCESS_COMMAND_prepend = " gen_buildprop;"
 IMAGE_PREPROCESS_COMMAND_mdm9640 += "gen_target;"
+IMAGE_PREPROCESS_COMMAND_mdm9640-hf += "gen_target;"
 
 gen_buildprop() {
    mkdir -p ${IMAGE_ROOTFS}/cache

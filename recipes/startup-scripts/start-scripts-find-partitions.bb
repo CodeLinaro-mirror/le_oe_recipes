@@ -4,7 +4,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/BSD;md5=377548
 LICENSE = "BSD"
 
 #re-use non-perf settings
-BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
+BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '').replace('-hf', '')}"
 
 SRC_URI +="file://${BASEMACHINE}/find_partitions.sh"
 
