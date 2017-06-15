@@ -16,6 +16,8 @@ SRC_URI += "\
             file://syslog-startup.conf \
             file://busybox_klogd.patch;patchdir=.. \
             file://CVE-2016-2148.patch \
+            file://CVE-2016-2147.patch \
+            file://CVE-2016-2147_2.patch \
 "
 
 prefix = ""
