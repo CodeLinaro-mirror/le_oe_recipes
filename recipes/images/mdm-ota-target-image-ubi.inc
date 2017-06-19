@@ -1,4 +1,5 @@
 DEPENDS += "mdm-image"
+DEPENDS_mdm9640-hf += "mdm-hf-image"
 
 OTA_TARGET_BASENAME_UBI     = "${MACHINE}-ota-target-image-ubi"
 OTA_TARGET_IMAGE_ROOTFS_UBI = "${IMAGE_ROOTFS}/../${OTA_TARGET_BASENAME_UBI}"
