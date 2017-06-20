@@ -15,6 +15,8 @@ SRC_URI[md5sum] = "d63e952716c27e23927bfd64518d6dee"
 SRC_URI[sha256sum] = "f3b437dbdf9f1519fa5e0a923428e77ba3babefbcfeda9aebb7cd72ae8924c1d"
 
 EXTRA_OEMAKE = ""
+EXTRA_CFLAGS = "-fPIC"
+EXTRA_CFLAGS_append_mdm9640-hf = " -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a8"
 
 FILES_${PN} += "/lib/lib*.so.*"
 FILES_${PN} += "/lib/pkgconfig/*"
@@ -22,12 +24,12 @@ FILES_${PN}-dev += "/usr/share/*"
 FILES_${PN}-dev += "/lib/lib*.so"
 
 do_configure () {
-    ./configure --enable-cross-compile --cross-prefix=${TARGET_PREFIX} \
+    ./configure --enable-cross-compile --cc=arm-oe-linux-gnueabi-gcc --cross-prefix=${TARGET_PREFIX} \
     --cpu=armv7-a --target-os=linux --sysroot=${STAGING_DIR_TARGET} --arch=${TARGET_ARCH} --disable-mmx \
     --enable-shared --disable-doc --disable-htmlpages --disable-manpages --disable-podpages \
     --disable-txtpages --disable-avdevice --disable-swresample --disable-swscale \
     --disable-postproc --enable-small --disable-avfilter --disable-debug --disable-ffserver --disable-ffplay \
-    --extra-cflags=-fPIC --enable-gpl --disable-network --disable-zlib --disable-ffmpeg --disable-encoders \
+    --extra-cflags="${EXTRA_CFLAGS}" --enable-gpl --disable-network --disable-zlib --disable-ffmpeg --disable-encoders \
     --disable-decoders --disable-muxers --disable-bsfs --disable-devices --disable-protocol=udp \
     --disable-protocol=tcp --disable-protocol=rtp --disable-protocol=pipe --disable-protocol=http \
     --disable-parser=cavsvideo --disable-parser=dca --disable-parser=dirac --disable-parser=dnxhd --disable-parser=mjpeg \
@@ -54,4 +56,4 @@ do_install() {
     if [ -e "${D}${infodir}/dir" ]; then
     rm -f ${D}${infodir}/dir
     fi
-} 
+}

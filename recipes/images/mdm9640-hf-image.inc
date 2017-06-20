@@ -1,5 +1,5 @@
 # Rootfs creation.
-# require mdm-bootimg.inc
+require mdm-bootimg.inc
 
 IMAGE_INSTALL += "packagegroup-core-boot"
 IMAGE_INSTALL += "${ROOTFS_PKGMANAGE_BOOTSTRAP}"
@@ -64,7 +64,7 @@ IMAGE_INSTALL += "lighttpd"
 IMAGE_INSTALL += "loc-stub"
 IMAGE_INSTALL += "loc-pla"
 IMAGE_INSTALL += "loc-hal"
-#IMAGE_INSTALL += "minidlna"
+IMAGE_INSTALL += "minidlna"
 IMAGE_INSTALL += "miniupnpd"
 IMAGE_INSTALL += "mtd-utils-ubifs"
 IMAGE_INSTALL += "open-avb"
