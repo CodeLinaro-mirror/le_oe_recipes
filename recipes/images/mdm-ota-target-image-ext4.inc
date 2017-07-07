@@ -3,7 +3,8 @@ DEPENDS += "mdm-image"
 OTA_TARGET_BASENAME_EXT4     = "${MACHINE}-ota-target-image-ext4"
 OTA_TARGET_IMAGE_ROOTFS_EXT4 = "${IMAGE_ROOTFS}/../${OTA_TARGET_BASENAME_EXT4}"
 OUTPUT_FILE_EXT4             = "${DEPLOY_DIR_IMAGE}/${OTA_TARGET_BASENAME_EXT4}.zip"
-BASE_IMAGE_ROOTFS_EXT4       = "$(echo ${IMAGE_ROOTFS} | sed 's#-recovery##')"
+MACHINE_IMAGE              = "${@base_conditional('MACHINE', 'mdm9650-perf', 'mdm-perf-image', 'mdm-image', d)}"
+BASE_IMAGE_ROOTFS_EXT4       = "$(echo ${IMAGE_ROOTFS} | sed 's#${PN}#${MACHINE_IMAGE}#')"
 #OUTPUT_FILE_EXT4 = "${OTA_TARGET_BASENAME_EXT4}.zip"
 
 python do_rootfs_append(){
@@ -28,7 +29,7 @@ mkdir -p ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/RADIO
 
 echo "base image rootfs: ${BASE_IMAGE_ROOTFS_EXT4}"
 # copy radio directory content into RADIO directory
-cp -r ${WORKSPACE}/oe-core/meta-msm/recipes/base-files-recovery/${MACHINE}/radio/. ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/RADIO/.
+cp -r ${WORKSPACE}/oe-core/meta-msm/recipes/base-files-recovery/${BASEMACHINE}/radio/. ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/RADIO/.
 
 # copy the boot\recovery images
 cp ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img ${OTA_TARGET_IMAGE_ROOTFS_EXT4}/BOOTABLE_IMAGES/boot.img
