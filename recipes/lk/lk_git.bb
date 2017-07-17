@@ -9,7 +9,7 @@ PROVIDES = "virtual/bootloader"
 FILESPATH =+ "${WORKSPACE}:"
 SRC_URI  = "file://bootable/bootloader/lk/"
 S        = "${WORKDIR}/bootable/bootloader/${PN}"
-PR       = "r15"
+PR       = "r15-${MACHINE}"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 

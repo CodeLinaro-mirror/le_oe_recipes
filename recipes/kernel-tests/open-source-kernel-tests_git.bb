@@ -26,7 +26,7 @@ PACKAGE_STRIP = "no"
 
 EXTRA_OEMAKE += "ARCH=${TARGET_ARCH} CROSS_COMPILE=${TARGET_PREFIX}"
 
-EXTRA_OECONF = "--prefix=/usr/kernel-tests \
+EXTRA_OECONF = "--prefix=/kernel-tests \
                 --with-kernel=${STAGING_KERNEL_BUILDDIR} \
                 --disable-sps \
                 --with-glib \
@@ -44,7 +44,7 @@ EXTRA_OECONF_append_mdm9607  = " --disable-ion"
 EXTRA_OECONF_append_mdm9607 += " --disable-ocmem"
 EXTRA_OECONF_append_mdm9607 += " --disable-ip_accelerator"
 
-FILES_${PN}-dbg = "${prefix}/kernel-tests/*/.debug/* ${prefix}/src/debug/*"
+FILES_${PN}-dbg = "/kernel-tests/*/.debug/* ${prefix}/src/debug/*"
 FILES_${PN}-dbg += "${libdir}/*.so ${libdir}/.debug/*"
-FILES_${PN} = "${prefix}/kernel-tests/* ${prefix}/src/*"
+FILES_${PN} = "/kernel-tests/* ${prefix}/src/*"
 FILES_${PN} += "${datadir}/pixmaps/* ${libdir}/*"
