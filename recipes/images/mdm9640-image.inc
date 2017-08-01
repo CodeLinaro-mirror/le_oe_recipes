@@ -98,6 +98,7 @@ IMAGE_INSTALL += "wpa-supplicant-qcacld"
 IMAGE_INSTALL += "tinyproxy"
 IMAGE_INSTALL += "iputils"
 IMAGE_INSTALL += "bind-utils"
+IMAGE_INSTALL += "tcp-splice"
 IMAGE_PREPROCESS_COMMAND += "echo ${MACHINE} >> ${IMAGE_ROOTFS}/target;"
 
 # Below is to generate sparse ext4 system image (OE by default supports raw ext4 images)
