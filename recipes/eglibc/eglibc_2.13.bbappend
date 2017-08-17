@@ -1,4 +1,6 @@
 PRINC="1"
 FILESEXTRAPATHS := "${THISDIR}/${PN}-${PV}"
 SRC_URI += "file://Ignore_page_size_assertion.patch \
-            file://CVE-2015-7547.patch"
+            file://CVE-2015-7547.patch \
+            file://CVE-2015-0235.patch"
+
