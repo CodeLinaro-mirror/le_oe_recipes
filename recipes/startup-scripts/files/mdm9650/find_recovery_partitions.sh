@@ -126,7 +126,6 @@ then
     eval FindAndMountEXT4 cache    /cache
 else
     fstype="UBI"
-    eval FindAndAttachUBI modem
     eval FindAndAttachUBI system
     eval FindAndMountUBI rootfs  /system  1
     eval FindAndMountUBI usrfs   /data    1
@@ -134,6 +133,5 @@ else
 fi
 
 FindAndMountMTD misc /misc
-eval FindAndMount${fstype} modem /firmware
 
 exit
