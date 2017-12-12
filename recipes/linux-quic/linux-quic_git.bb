@@ -4,7 +4,7 @@ DESCRIPTION = "QuIC Linux Kernel"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 COMPATIBLE_MACHINE = "mdm9640"
-BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '').replace('-2k', '')}"
+BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '').replace('-2k', '').replace('-2k-perf', '')}"
 
 # Moved to here from the distro.conf file because it really kind of belongs
 # here and we're moving more to being a BSP with the MSM linux distro...
@@ -14,6 +14,7 @@ KERNEL_IMAGETYPE = "zImage"
 KERNEL_DEFCONFIG_mdm9640       = "mdm9640_defconfig"
 KERNEL_DEFCONFIG_mdm9640-2k       = "mdm9640_defconfig"
 KERNEL_DEFCONFIG_mdm9640-perf  = "mdm9640-perf_defconfig"
+KERNEL_DEFCONFIG_mdm9640-2k-perf  = "mdm9640-perf_defconfig"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 KDIR = "/usr/src/kernel"
