@@ -1,10 +1,16 @@
-inherit module
+inherit autotools linux-kernel-base module
 
 DESCRIPTION = "Qualcomm Atheros WLAN CLD driver"
 LICENSE = "ISC"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/${LICENSE};md5=f3b90e78ea0cffb20bf5cca7947a896d"
 
+KERNEL_VERSION = "${@get_kernelversion('${STAGING_KERNEL_DIR}')}"
+
 FILES_${PN} += "${base_libdir}/firmware/wlan/*"
+
+FILES_${PN} += "\
+    ${D}${base_libdir}/modules/${KERNEL_VERSION}/extra/wlan.ko \
+    "
 
 PR = "r3"
 
