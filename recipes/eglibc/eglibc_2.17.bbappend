@@ -12,4 +12,5 @@ SRC_URI += "\
     file://Refactor-strtod-parsing-of-NaN-payloads.patch \
     file://CVE-2014-9761_1.patch \
     file://CVE-2014-9761_2.patch \
+    file://CVE-2017-15804.patch \
 "
