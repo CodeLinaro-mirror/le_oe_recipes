@@ -1,10 +1,12 @@
-DEPENDS += "mdm-image"
+DEPENDS += "mdm-image releasetools-native"
 
 OTA_TARGET_BASENAME_UBI = "${MACHINE}-ota-target-image-ubi"
 OTA_TARGET_IMAGE_ROOTFS_UBI = "${IMAGE_ROOTFS}/../${OTA_TARGET_BASENAME_UBI}"
 OUTPUT_FILE_UBI = "${DEPLOY_DIR_IMAGE}/${OTA_TARGET_BASENAME_UBI}.zip"
 BASE_IMAGE_ROOTFS_UBI = "$(echo ${IMAGE_ROOTFS} | sed 's#-recovery##')"
 #OUTPUT_FILE_UBI = "${OTA_TARGET_BASENAME_UBI}.zip"
+
+addtask do_gen_otazip_ubi after do_rootfs before do_build
 
 do_rootfs_append(){
 rm -rf ${OTA_TARGET_IMAGE_ROOTFS_UBI}
@@ -21,7 +23,7 @@ mkdir -p ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RADIO
 
 echo "base image rootfs: ${BASE_IMAGE_ROOTFS_UBI}"
 # copy radio directory content into RADIO directory
-cp -r ${WORKSPACE}/oe-core/meta-msm/recipes/base-files-recovery/${MACHINE}/radio/. ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RADIO/.
+cp -r ${WORKSPACE}/oe-core/meta-msm/recipes/base-files-recovery/${BASEMACHINE}/radio/. ${OTA_TARGET_IMAGE_ROOTFS_UBI}/RADIO/.
 
 # copy the boot\recovery images
 cp ${DEPLOY_DIR_IMAGE}/${MACHINE}-boot.img ${OTA_TARGET_IMAGE_ROOTFS_UBI}/BOOTABLE_IMAGES/boot.img
@@ -85,4 +87,18 @@ echo default_system_dev_certificate=build/abcd >> ${OTA_TARGET_IMAGE_ROOTFS_UBI}
 rm -rf ${DEPLOY_DIR_IMAGE}/${OTA_TARGET_BASENAME_UBI}
 # Pack the files into the deploy dir
 cp -r ${OTA_TARGET_IMAGE_ROOTFS_UBI} ${DEPLOY_DIR_IMAGE}
+}
+
+# Task to generate OTA zip files
+python do_gen_otazip_ubi() {
+    import subprocess
+
+    cmd1 = "cd ${IMAGE_ROOTFS}/../${MACHINE}-ota-target-image-ubi && zip -qry -FS ${TMPDIR}/work/x86_64-linux/releasetools-native/1.0-r0/releasetools/target-files-ubi.zip *"
+    subprocess.call(cmd1, shell=True)
+
+    cmd2 = "cd ${TMPDIR}/work/x86_64-linux/releasetools-native/1.0-r0/releasetools && ./full_ota.sh target-files-ubi.zip ${MACHINE} MTD"
+    subprocess.call(cmd2, shell=True)
+
+    cmd3 = "cd ${TMPDIR}/work/x86_64-linux/releasetools-native/1.0-r0/releasetools && cp update.zip target-files-ubi.zip ${DEPLOY_DIR_IMAGE}"
+    subprocess.call(cmd3, shell=True)
 }

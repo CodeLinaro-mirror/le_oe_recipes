@@ -6,7 +6,9 @@ DEPENDS += "bzip2 fsconfig-native"
 # Image output types
 IMAGE_FSTYPES += "ubi"
 
-MKUBIFS_ARGS = "-m 4096 -e 253952 -c 83 -F"
+RECOVERY_MKUBIFS_ARGS = "${@bb.utils.contains('PAGE_SIZE', '2048', '-m 2048 -e 126976 -c 83 -F', '-m 4096 -e 253952 -c 83 -F', d)}"
+
+MKUBIFS_ARGS = "${@bb.utils.contains('IMAGE_FSTYPES', 'ubi', '${RECOVERY_MKUBIFS_ARGS}', '', d)}"
 
 UBI_VOLNAME = "rootfs"
 

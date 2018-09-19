@@ -6,6 +6,9 @@ LICENSE = "BSD"
 #re-use non-perf settings
 BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-perf', '')}"
 
+#re-use 2k settings
+BASEMACHINE = "${@d.getVar('MACHINE', True).replace('-2k', '')}"
+
 SRC_URI +="file://${BASEMACHINE}/find_recovery_partitions.sh"
 
 PR = "r2"
