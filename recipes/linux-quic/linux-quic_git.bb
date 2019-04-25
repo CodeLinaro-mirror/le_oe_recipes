@@ -149,6 +149,28 @@ do_deploy_prepend() {
            fi
     done
 }
+
+do_deploy_append_mdm9640() {
+
+       if [ ${qcom_check} == "qcom" ]; then
+               cat ${D}/${KERNEL_IMAGEDEST}/${zImage_VAR}-${KERNEL_VERSION} ${B}/arch/arm/boot/dts/${d}.dtb > ${B}/arch/arm/boot/dts/qcom/dtb-${zImage_VAR}-${KERNEL_VERSION}-${targets}
+               ${STAGING_BINDIR_NATIVE}/dtbtool ${B}/arch/arm/boot/dts/qcom/ -s ${PAGE_SIZE_2k} -o ${D}/${KERNEL_IMAGEDEST}/masterDTB -p ${B}/scripts/dtc/ -v
+       else
+               cat ${D}/${KERNEL_IMAGEDEST}/${zImage_VAR}-${KERNEL_VERSION} ${B}/arch/arm/boot/dts/${d}.dtb > ${B}/arch/arm/boot/dts/dtb-${zImage_VAR}-${KERNEL_VERSION}-${targets}
+               ${STAGING_BINDIR_NATIVE}/dtbtool ${B}/arch/arm/boot/dts/ -s ${PAGE_SIZE_2k} -o ${D}/${KERNEL_IMAGEDEST}/masterDTB -p ${B}/scripts/dtc/ -v
+       fi
+
+       # Make 2k bootimage
+       ${STAGING_BINDIR_NATIVE}/mkbootimg --kernel ${D}/${KERNEL_IMAGEDEST}/${zImage_VAR}-${KERNEL_VERSION} \
+        --ramdisk /dev/null \
+        --cmdline "${cmdparams}" \
+        --pagesize ${PAGE_SIZE_2k} \
+        --base ${MACHINE_KERNEL_BASE} \
+        --ramdisk_offset 0x0 \
+        ${extra_mkbootimg_params} --output ${DEPLOY_DIR_IMAGE}/${MACHINE}-2k-boot.img
+
+}
+
 do_deploy () {
 
         extra_mkbootimg_params='--dt ${D}/${KERNEL_IMAGEDEST}/masterDTB --tags-addr ${MACHINE_KERNEL_TAGS_OFFSET}'
