@@ -19,13 +19,18 @@ BASEMACHINE        = "mdm9640"
 MY_TARGET          = "${BASEMACHINE}"
 MY_TARGET_apq8009  = "msm8909"
 MY_TARGET_mdm9607  = "mdm9607"
+MY_TARGET_mdm9607-hf  = "mdm9607"
 MY_TARGET_mdm9607-perf  = "mdm9607"
+MY_TARGET_mdm9607-hf-perf  = "mdm9607"
 MY_TARGET_mdm9607-psm  = "mdm9607"
 
 LIBGCC             = "${STAGING_LIBDIR}/${TARGET_SYS}/4.9.2/libgcc.a"
 
-EXTRA_OEMAKE = "${MY_TARGET} TOOLCHAIN_PREFIX='${TARGET_PREFIX}'  LIBGCC='${LIBGCC}'"
+EXTRA_OEMAKE = "${MY_TARGET} ARCH='${TARGET_ARCH}' CC='${CC}' TOOLCHAIN_PREFIX='${TARGET_PREFIX}'  LIBGCC='${LIBGCC}'"
 EXTRA_OEMAKE += " SIGNED_KERNEL=1"
+
+#enable hardfloat
+EXTRA_OEMAKE_append = " ${@base_conditional('ARM_FLOAT_ABI', 'hard', 'ENABLE_HARD_FPU=1', '', d)}"
 
 do_install() {
         install -d ${D}/boot
