@@ -1,0 +1,30 @@
+From 481492c89c731a2642eadce39f0f8d55a97fd387 Mon Sep 17 00:00:00 2001
+From: Krishnamurthy K R <kkr@codeaurora.org>
+Date: Wed, 10 Jul 2019 16:41:54 +0530
+Subject: binutils-2.24: resolve binutils build error
+
+Fix Werror-logical-not-parentheses-error when host has gcc5 version
+
+Signed-off-by: Krishnamurthy K R <kkr@codeaurora.org>
+---
+ gas/config/tc-i386.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/gas/config/tc-i386.c b/gas/config/tc-i386.c
+index 3c423da..3b90b67 100644
+--- a/gas/config/tc-i386.c
++++ b/gas/config/tc-i386.c
+@@ -6139,8 +6139,8 @@ build_modrm_byte (void)
+	      op = i.tm.operand_types[vvvv];
+	      op.bitfield.regmem = 0;
+	      if ((dest + 1) >= i.operands
+-		  || (op.bitfield.reg32 != 1
+-		      && !op.bitfield.reg64 != 1
++		  || (!op.bitfield.reg32
++		      && op.bitfield.reg64
+		      && !operand_type_equal (&op, &regxmm)
+		      && !operand_type_equal (&op, &regymm)
+		      && !operand_type_equal (&op, &regzmm)
+--
+2.7.4
+
