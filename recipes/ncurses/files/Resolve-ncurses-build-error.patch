@@ -1,0 +1,31 @@
+From 1bef7ee8b4304dc7e2a0965936e3f5138e03f3f9 Mon Sep 17 00:00:00 2001
+From: Krishnamurthy K R <kkr@codeaurora.org>
+Date: Wed, 10 Jul 2019 17:14:27 +0530
+Subject: ncurses-5.9:resolve ncurses build error
+
+These packages failed to build because of the changes in the
+preprocessor,gcc started to generate line directives to better
+detect whether a macro tokens come from a system header.The fix is
+to use the -P option if the code isn't prepared to deal with
+such directives.
+
+---
+ ncurses/base/MKlib_gen.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ncurses/base/MKlib_gen.sh b/ncurses/base/MKlib_gen.sh
+index 66ae295..96dd75c 100755
+--- a/ncurses/base/MKlib_gen.sh
++++ b/ncurses/base/MKlib_gen.sh
+@@ -62,7 +62,7 @@ if test "${LC_MESSAGES+set}" = set; then LC_MESSAGES=C; export LC_MESSAGES; fi
+ if test "${LC_CTYPE+set}"    = set; then LC_CTYPE=C;    export LC_CTYPE;    fi
+ if test "${LC_COLLATE+set}"  = set; then LC_COLLATE=C;  export LC_COLLATE;  fi
+
+-preprocessor="$1 -DNCURSES_INTERNALS -I../include"
++preprocessor="$1 -P -DNCURSES_INTERNALS -I../include"
+ AWK="$2"
+ USE="$3"
+
+--
+2.7.4
+
