@@ -500,6 +500,14 @@ CONFIG_NEED_AP_MLME=y
 # Enable compiling libwpa_client as a dynamic library
 CONFIG_BUILD_WPA_CLIENT_SO=y
 
+#Enable SAE
+CONFIG_SAE=y
+
+#Enable OWE
+CONFIG_OWE=y
+
+CONFIG_DRIVER_NL80211_QCA=y
+
 # Enable QMI EAP PROXY
 CONFIG_EAP_PROXY=qmi
 CONFIG_EAP_PROXY_DUAL_SIM := true
