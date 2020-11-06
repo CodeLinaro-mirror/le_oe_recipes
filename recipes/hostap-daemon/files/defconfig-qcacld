@@ -196,3 +196,6 @@ CONFIG_OS=unix
 
 # Enable ACS to make host driver be capable of advertising ACS offload feature
 CONFIG_ACS=y
+
+CONFIG_OWE=y
+CONFIG_SAE=y
