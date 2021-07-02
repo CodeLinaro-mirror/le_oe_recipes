@@ -24,15 +24,15 @@ EXTRA_OEMAKE =+ "CONFIG_IPA_OFFLOAD=1"
 
 do_install() {
     module_do_install
-#    install -d ${D}${sysconfdir}/init.d
-#    install -m 0755 ${WORKDIR}/neutrino2_start_stop_le ${D}${sysconfdir}/init.d
+    install -d ${D}${sysconfdir}/init.d
+    install -m 0755 ${WORKDIR}/neutrino2_start_stop_le ${D}${sysconfdir}/init.d
 #    install -m 0755 ${WORKDIR}/setup_avtp_routing_le ${D}${sysconfdir}/init.d
 }
 
-#pkg_postinst_${PN} () {
-#    [ -n "$D" ] && OPT="-r $D" || OPT="-s"
-#    update-rc.d $OPT -f neutrino2_start_stop_le remove
-#    update-rc.d $OPT neutrino2_start_stop_le start 37 S . stop 63 0 1 6 .
+pkg_postinst_${PN} () {
+    [ -n "$D" ] && OPT="-r $D" || OPT="-s"
+    update-rc.d $OPT -f neutrino2_start_stop_le remove
+    update-rc.d $OPT neutrino2_start_stop_le start 37 S . stop 63 0 1 6 .
 #    update-rc.d $OPT -f setup_avtp_routing_le remove
 #    update-rc.d $OPT setup_avtp_routing_le start 91 5 . stop 9 0 1 6 .
-#}
+}

@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# Copyright (c) 2016, The Linux Foundation. All rights reserved.
+# Copyright (c) 2016,2021 The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -29,19 +29,40 @@
 export MODULE_BASE=/lib/modules/`uname -r`/
 set -e
 
+driver_detection()
+{
+  ntn1_id=0
+  ntn1_id=`lspci | grep 1179:021a`
+  vendor_id='021a'
+
+  case $ntn1_id in
+
+  *"$vendor_id"*)
+    export ntn1_detect=1
+    ;;
+  esac
+}
+
 case "$1" in
   start)
-        echo -n "Starting/Loading Ethernet Driver: "
-        echo "Neutrino:start/load" > /dev/kmsg
-        insmod $MODULE_BASE/extra/DWC_ETH_QOS.ko fw_filename="DWC_ETH_QOS_fw.bin"
-        ifconfig eth0 up
-        echo "done loading ethernet driver"
+        driver_detection
+        if [ $ntn1_detect == "1" ]
+        then
+            echo "Neutrino1:start/load" > /dev/kmsg
+            insmod $MODULE_BASE/extra/DWC_ETH_QOS.ko fw_filename="DWC_ETH_QOS_fw.bin"
+            ifconfig eth0 up
+            echo "done loading ethernet driver"
+        fi
         ;;
   stop)
-        echo -n "Unloading Ethernet Driver "
-        rmmod DWC_ETH_QOS
-        echo "done unloading ethernet driver"
-        ;;
+       driver_detection
+       if [ $ntn1_detect == "1" ]
+       then
+           echo -n "Unloading Neutrino-1 Ethernet Driver "
+           rmmod DWC_ETH_QOS
+           echo "done unloading ethernet driver"
+       fi
+       ;;
   restart)
         $0 stop
         $0 start

@@ -32,18 +32,39 @@
 export MODULE_BASE=/lib/modules/`uname -r`/
 set -e
 
+driver_detection()
+{
+  ntn2_id=0
+  ntn2_id=`lspci | grep 1179:021f`
+  vendor_id='021f'
+
+  case $ntn2_id in
+
+  *"$vendor_id"*)
+    export ntn2_detect=1
+    ;;
+  esac
+}
+
 case "$1" in
   start)
-        echo -n "Starting/Loading Ethernet Driver: "
-        echo "Neutrino2:start/load" > /dev/kmsg
-        #insmod $MODULE_BASE/extra/tc9562_pcie_eth.ko fw_filename="TC9562_Firmware_PCIeBridge.bin"
-        #ifconfig eth0 up
-        echo "done loading ethernet driver"
+        driver_detection
+        if [ $ntn2_detect == "1" ]
+        then
+            echo "Neutrino2:start/load" > /dev/kmsg
+            insmod $MODULE_BASE/extra/tc9562_pcie_eth.ko
+            ifconfig eth0 up
+            echo "done loading ethernet driver"
+        fi
         ;;
   stop)
-        echo -n "Unloading Ethernet Driver "
-        #rmmod tc9562_pcie_eth
-        echo "done unloading ethernet driver"
+        driver_detection
+        if [ $ntn2_detect == "1" ]
+        then
+            echo -n "Unloading Ethernet Driver "
+            rmmod tc9562_pcie_eth
+            echo "done unloading ethernet driver"
+        fi
         ;;
   restart)
         $0 stop
