@@ -88,6 +88,7 @@
 # Driver interface for Linux drivers using the nl80211 kernel interface
 CONFIG_DRIVER_NL80211=y
 CONFIG_LIBNL32=y
+# CONFIG_DRIVER_NL80211_QCA=y
 
 # Driver interface for FreeBSD net80211 layer (e.g., Atheros driver)
 #CONFIG_DRIVER_BSD=y
@@ -499,6 +500,10 @@ CONFIG_NEED_AP_MLME=y
 
 # Enable compiling libwpa_client as a dynamic library
 CONFIG_BUILD_WPA_CLIENT_SO=y
+
+# Enable P2P in wpa_supplicant
+# CONFIG_P2P=y
+# CONFIG_AP=y
 
 # Enable QMI EAP PROXY
 CONFIG_EAP_PROXY=qmi

@@ -21,6 +21,7 @@
 
 # Driver interface for drivers using the nl80211 kernel interface
 CONFIG_DRIVER_NL80211=y
+CONFIG_DRIVER_NL80211_QCA=y
 # driver_nl80211.c requires a rather new libnl (version 1.1) which may not be
 # shipped with your distribution yet. If that is the case, you need to build
 # newer libnl version and point the hostapd build to use it.
@@ -196,3 +197,7 @@ CONFIG_OS=unix
 
 # Enable ACS to make host driver be capable of advertising ACS offload feature
 CONFIG_ACS=y
+# Interworking (IEEE 802.11u)
+# This can be used to enable functionality to improve interworking with
+# external networks.
+CONFIG_INTERWORKING=y
