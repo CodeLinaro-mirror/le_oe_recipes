@@ -1,5 +1,6 @@
-SRC_URI = "${CAF_GIT}/platform/external/prelink-cross;protocol=git;branch=yocto/cross_prelink \
-           file://prelink.conf \
+SRC_URI = "${CLO_LE_GIT}/platform/external/prelink-cross;protocol=https;branch=caf_migration/yocto/cross_prelink"
+
+SRC_URI += "file://prelink.conf \
            file://prelink.cron.daily \
            file://prelink.default \
            file://macros.prelink"
