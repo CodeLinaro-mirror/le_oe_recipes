@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/${LICENSE};md5
 PR = "r1"
 
 SRCREV = "0493b2d4d192f9431e543cf201df45fd8b14b592"
-SRC_URI = "git://codeaurora.org/quic/qsdk/oss/lklm/shortcut-fe;protocol=git;branch=banana \
+SRC_URI = "git://git.codelinaro.org/clo/qsdk/oss/lklm/shortcut-fe;protocol=https;branch=caf_migration/banana \
 		   file://mdm_shortcut_fe.patch \
 		   file://start_shortcut_fe_le "
 

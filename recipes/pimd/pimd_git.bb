@@ -9,7 +9,7 @@ do_configure() {
 }
 
 SRCREV = "c4b1c9f4b5eaa70931d0f62f456ae10ac4c4a829"
-SRC_URI = "git://codeaurora.org/quic/le/pimd.git;protocol=git \
+SRC_URI = "${CLO_LE_GIT}/pimd.git;protocol=https \
            file://0001-pimb-multicast-support-on-network.patch "
 
 SRC_URI_append_9615-cdp += " \
