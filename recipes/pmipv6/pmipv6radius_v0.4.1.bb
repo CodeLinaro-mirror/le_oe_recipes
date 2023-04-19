@@ -12,7 +12,7 @@ FILES_${PN} +="/usr/lib/*.a"
 FILES_${PN} +="/usr/local/etc/radiusclient/*"
 FILES_${PN} +="/usr/local/sbin/*"
 
-SRC_URI = "git://source.codeaurora.org/quic/le/freeradius-client-1.1.6;protocol=http;branch=github/chunyeow/master \
+SRC_URI = "git://git.codelinaro.org/clo/le/freeradius-client-1.1.6;protocol=https;branch=caf_migration/github/chunyeow/master \
 file://configure.patch \
 "
 
