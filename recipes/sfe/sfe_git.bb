@@ -4,10 +4,9 @@ LICENSE = "ISC"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/${LICENSE};md5=f3b90e78ea0cffb20bf5cca7947a896d"
 
 PR = "r1"
+FILESPATH =+ "${WORKSPACE}:"
 
-SRCREV = "0493b2d4d192f9431e543cf201df45fd8b14b592"
-SRC_URI = "git://git.codelinaro.org/clo/qsdk/oss/lklm/shortcut-fe;protocol=https;branch=caf_migration/banana \
-		   file://mdm_shortcut_fe.patch \
+SRC_URI = "file://shortcut-fe/shortcut-fe/ \
 		   file://start_shortcut_fe_le "
 
 S = "${WORKDIR}/shortcut-fe/shortcut-fe"
